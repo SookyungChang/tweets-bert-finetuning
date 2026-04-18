@@ -1,0 +1,17 @@
+pandas
+numpy
+scikit-learn
+matplotlib
+
+# torch
+transformers
+datasets
+evaluate
+
+optuna
+
+pyarrow
+fastparquet
+
+tqdm
+shap

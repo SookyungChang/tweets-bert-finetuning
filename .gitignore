@@ -1,0 +1,35 @@
+# --- Data & Models ---
+data/*
+!data/preprocess.py
+
+not_completed/
+
+saved_models/*
+!saved_models/.gitkeep
+
+*.parquet
+*.csv
+*.zip
+*.tar.gz
+*.pkl
+*.h5
+*.pt
+*.onnx
+
+# --- Python env ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env
+
+# --- OS & IDE ---
+.DS_Store
+.vscode/
+.idea/
+.ipynb_checkpoints/
+
+# --- Jupyter Notebook ---
+.ipynb_checkpoints
