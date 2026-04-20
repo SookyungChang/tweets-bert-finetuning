@@ -1,4 +1,4 @@
-# 🧠 Sentiment Analysis: TF-IDF vs BERT (Production-Ready)
+# 🧠 Production-style Sentiment Analysis System comparing TF-IDF and Fine-tuned BERT with FastAPI deployment
 
 Achieved 0.85 F1 score on 640K tweets using BERT fine-tuning, outperforming a TF-IDF baseline.
 Built as a modular ML pipeline + API service for real-world usage.

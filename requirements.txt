@@ -1,17 +1,29 @@
-pandas
-numpy
-scikit-learn
-matplotlib
+torch
+torchvision
+torchaudio
 
-# torch
 transformers
 datasets
 evaluate
 
+scikit-learn
+numpy
+pandas
+scipy
+
 optuna
+joblib
+
+fastapi
+uvicorn
+pydantic
+starlette
+python-multipart
 
 pyarrow
 fastparquet
+requests
+python-dotenv
 
+tensorboard
 tqdm
-shap

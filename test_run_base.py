@@ -9,6 +9,23 @@ from src.inference import predictor_base
 
 
 def test_all():
+    # data_path = "data/tweets640k.parquet"
+    # train(data_path)
+
+    # X, y = build_dataset(data_path, type="base")
+
+    # _, X_test, _, _, y_test, _ = (
+    #     *X,
+    #     *y,
+    # )
+
+    # model = ModelConfig()
+
+    # BASE_DIR = Path(__file__).resolve().parent
+    # SAVE_MODEL_PATH = BASE_DIR / "saved_models"
+    # pipe_path = SAVE_MODEL_PATH / f"tfidf_logreg_{model.version}.pkl"
+    # predict(pipe_path, X_test, y_test)
+
     model = predictor_base.load_model()
     texts = ["I love this!", "This is terrible", "I'm not sure how I feel"]
 
@@ -18,20 +35,3 @@ def test_all():
 
 if __name__ == "__main__":
     test_all()
-
-# data_path = "data/tweets640k.parquet"
-# train(data_path)
-
-# X, y = build_dataset(data_path, type="base")
-
-# _, X_test, _, _, y_test, _ = (
-#     *X,
-#     *y,
-# )
-
-# model = ModelConfig()
-
-# BASE_DIR = Path(__file__).resolve().parent
-# SAVE_MODEL_PATH = BASE_DIR / "saved_models"
-# pipe_path = SAVE_MODEL_PATH / f"tfidf_logreg_{model.version}.pkl"
-# predict(pipe_path, X_test, y_test)
