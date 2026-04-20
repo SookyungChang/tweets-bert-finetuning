@@ -1,11 +1,11 @@
-🧠 Sentiment Analysis: TF-IDF vs BERT (Production-Ready)
+# 🧠 Sentiment Analysis: TF-IDF vs BERT (Production-Ready)
 
 Achieved 0.85 F1 score on 640K tweets using BERT fine-tuning, outperforming a TF-IDF baseline.
 Built as a modular ML pipeline + API service for real-world usage.
 
 ---
 
-📊 Overview
+## 📊 Overview
 
 This project compares a classical machine learning baseline with a modern transformer-based approach for sentiment classification.
 
@@ -30,7 +30,7 @@ Key Extension (Production)
 
 ---
 
-📁 Dataset
+## 📁 Dataset
 
 - Total samples: 640,000
 - Train: 320,000
@@ -46,9 +46,9 @@ Preprocessing
 
 ---
 
-⚙️ Methods
+## ⚙️ Methods
 
-1. TF-IDF + Logistic Regression
+### 1. TF-IDF + Logistic Regression
 
 - n-grams: (1, 3)
 - max_features: ~30K
@@ -70,7 +70,7 @@ Performance
 
 ---
 
-2. DistilBERT Fine-Tuning
+### 2. DistilBERT Fine-Tuning
 
 - Model: distilbert-base-uncased-finetuned-sst-2-english
 - Framework: HuggingFace Transformers
@@ -90,7 +90,7 @@ Performance
 
 ---
 
-📈 Results
+## 📈 Results
 
 Model| F1 Score
 TF-IDF + Logistic Regression| 0.8056
@@ -98,7 +98,7 @@ DistilBERT (fine-tuned)| 0.8496
 
 ---
 
-🔍 Model Comparison (Key Insight)
+## 🔍 Model Comparison (Key Insight)
 
 Example:
 
@@ -112,13 +112,13 @@ Interpretation
 - Baseline relies on keywords ("not", "bad") → predicts negative
 - BERT understands context → predicts slightly positive
 
-👉 Conclusion
+## 👉 Conclusion
 
 «Baseline is keyword-based, while BERT captures contextual semantics.»
 
 ---
 
-🏗️ Project Structure (Production-Oriented)
+## 🏗️ Project Structure (Production-Oriented)
 
 bert-sentiment-project/
 │
@@ -157,7 +157,7 @@ bert-sentiment-project/
 
 ---
 
-🚀 API (Model Serving)
+## 🚀 API (Model Serving)
 
 This project includes a production-style inference API.
 
@@ -207,7 +207,7 @@ POST /predict_all
 
 ---
 
-🧪 Local Testing
+## 🧪 Local Testing
 
 Run Baseline Test
 
@@ -219,7 +219,7 @@ python test_run_bert.py
 
 ---
 
-🧠 ML Engineering Highlights
+## 🧠 ML Engineering Highlights
 
 - Modular architecture (data / model / training / inference / API)
 - Separation of concerns
@@ -230,14 +230,14 @@ python test_run_bert.py
 
 ---
 
-💾 Model Saving
+## 💾 Model Saving
 
 - TF-IDF pipeline → "pickle"
 - BERT → HuggingFace "Trainer.save_model()"
 
 ---
 
-🚀 Future Work
+## 🚀 Future Work
 
 - Improve BERT tuning (epochs, scheduling)
 - Try larger models (RoBERTa, BERT-base)
@@ -247,7 +247,7 @@ python test_run_bert.py
 
 ---
 
-🧪 Reproducibility
+## 🧪 Reproducibility
 
 - Seed: 42
 - Libraries:
@@ -259,7 +259,7 @@ python test_run_bert.py
 
 ---
 
-🇩🇪 Deutsche Zusammenfassung
+## 🇩🇪 Deutsche Zusammenfassung
 
 Dieses Projekt vergleicht klassische Machine-Learning-Methoden (TF-IDF + Logistic Regression) mit modernen Transformer-Modellen (DistilBERT) für die Sentimentanalyse auf einem großen Twitter-Datensatz (640K Samples).
 
@@ -267,6 +267,6 @@ Das feinabgestimmte BERT-Modell erreicht eine F1-Score von 0.85 und übertrifft 
 
 ---
 
-💡 Key Takeaway
+## 💡 Key Takeaway
 
 «This project goes beyond model training — it demonstrates how to design, evaluate, and deploy machine learning systems in a production-like environment.»
