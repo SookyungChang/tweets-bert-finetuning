@@ -101,12 +101,12 @@ DistilBERT (fine-tuned)| 0.8496
 ## 🔍 Model Comparison (Key Insight)
 
 Example:
-
+```python
 Text: "It's okay, not great but not bad."
 
 Baseline → pred: 0 (conf: 0.57)
 BERT     → pred: 1 (conf: 0.88)
-
+```
 Interpretation
 
 - Baseline relies on keywords ("not", "bad") → predicts negative
@@ -167,32 +167,34 @@ uvicorn src.api.app:app --reload
 ---
 
 Open API Docs (Swagger UI)
-
+```python
 http://127.0.0.1:8000/docs
-
+```
 ---
 
 Example Request
 
+```python
 POST /predict
 
 {
   "text": "I feel so happy today!"
 }
-
+```
 ---
 
 Example Response
-
+```python
 {
   "prediction": 1,
   "confidence": 0.99
 }
-
+```
 ---
 
 Compare Models (Optional Endpoint)
 
+```python
 POST /predict_all
 
 {
@@ -203,6 +205,8 @@ POST /predict_all
   "baseline": {...},
   "bert": {...}
 }
+```
+
 
 ---
 
@@ -283,9 +287,6 @@ Run locally:
 ```python
 Bash
 uvicorn src.api.app:app --host 0.0.0.0 --port 8000 --reload
-```
-
-```python
 ```
 
 API Documentation (Swagger UI):
