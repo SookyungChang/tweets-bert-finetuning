@@ -143,10 +143,9 @@ bert-sentiment-project/
 │   ├── inference/  
 │   │   ├── predictor_base.py  
 │   │   └── predictor_bert.py  
-│   │  
-│   └── config/  
-│       ├── config_base.py  
-│       └── config_bert.py  
+│   │    
+│   ├── config_base.py  
+│   └── config_bert.py  
 │  
 ├── saved_models/  
 ├── saved_experiments/  
