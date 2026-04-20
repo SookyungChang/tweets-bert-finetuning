@@ -1,14 +1,18 @@
-import os
 import pickle
-from src.config_base import ModelConfig
-from sklearn.metrics import f1_score
+from pathlib import Path
+from src.config_bert import PathConfig
 
 
-def predict(pipe_path, X_test, y_test):
-    model = ModelConfig()
-    with open(pipe_path, "rb") as f:
-        loaded_pipe = pickle.load(f)
-    pred_labels_loaded = loaded_pipe.predict(X_test)
-    f1_loaded = f1_score(y_test, pred_labels_loaded, average=model.f1_avg)
+def load_model():
+    paths = PathConfig()
+    SAVED_MODELS_PATH = paths.SAVED_MODELS_PATH
+    model_path = Path(SAVED_MODELS_PATH / "tfidf_logreg_0.1.0.pkl")
+    with open(model_path, "rb") as f:
+        model = pickle.load(f)
+    return model
 
-    print(f"F1 score with {model.f1_avg}-averaging is {f1_loaded}")
+
+def predict(model, text):
+    pred = model.predict([text])[0]
+    probs = model.predict_proba([text])[0]
+    return {"text": text, "prediction": int(pred), "confidence": float(probs.max())}

@@ -18,4 +18,4 @@ class Predictor:
             probs = torch.nn.functional.softmax(outputs.logits, dim=-1)
             pred = torch.argmax(probs).item()
 
-        return pred, float(torch.max(probs))
+        return {"text": text, "prediction": pred, "confidence": float(torch.max(probs))}
