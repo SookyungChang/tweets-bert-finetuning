@@ -269,3 +269,118 @@ Das feinabgestimmte BERT-Modell erreicht eine F1-Score von 0.85 und übertrifft 
 ## 💡 Key Takeaway
 
 «This project goes beyond model training — it demonstrates how to design, evaluate, and deploy machine learning systems in a production-like environment.»
+
+
+## 🐳 Deployment (FastAPI + Docker MLOps Style)
+
+To simulate a production environment, this project includes a lightweight model serving layer using FastAPI and Docker.
+
+## 🚀 FastAPI Inference Service
+The trained models (TF-IDF baseline and BERT) are exposed via REST API endpoints. 
+
+Run locally:
+
+```python
+Bash
+uvicorn src.api.app:app --host 0.0.0.0 --port 8000 --reload
+```
+
+```python
+```
+
+API Documentation (Swagger UI):
+```python
+http://127.0.0.1:8000/docs
+```
+
+##  📡 REST API Concept
+REST API = A way for different systems to communicate over HTTP
+Your model becomes a service, not just a script
+Input: text
+Output: prediction + confidence
+
+Example:
+```python
+JSON
+POST /predict
+{
+  "text": "I love this product!"
+}
+```
+
+Response:
+```python
+JSON
+{
+  "prediction": 1,
+  "confidence": 0.99
+}
+```
+
+## 🐳 Dockerization (Reproducible Deployment)
+To ensure reproducibility across environments, the model API is containerized.
+📄 Dockerfile
+```python
+Dockerfile
+FROM python:3.10-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD ["uvicorn", "src.api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+## ▶️ Build & Run Docker Container
+
+Build image:
+```python
+Bash
+docker build -t sentiment-api .
+```
+
+Run container:
+```python
+Bash
+docker run -p 8000:8000 sentiment-api
+```
+Now API is accessible at:
+```python
+http://localhost:8000/docs
+```
+## 🧠 Why this is "MLOps-like"
+
+This project includes key production ML concepts:
+✔ Model training pipeline (offline)
+✔ Model inference service (FastAPI)
+✔ Containerized deployment (Docker)
+✔ Reproducibility (requirements + fixed pipeline)
+✔ Separation of training vs serving
+
+## ⚠️ Design Decision (Important)
+Training is not inside Docker
+Only inference is containerized
+Reason:
+Training may require GPU / different environments
+Inference should be lightweight and portable
+
+## 🔥 Extension Idea (Advanced MLOps)
+Future improvements:
+Add CI/CD (GitHub Actions)
+Add model versioning
+Deploy via:
+Render / AWS / GCP
+Add logging + monitoring
+Add batch inference endpoint
+
+
+## 💡 Final Insight
+This project demonstrates a full machine learning lifecycle: from data preprocessing → model training → evaluation → API deployment → containerization.
