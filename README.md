@@ -91,11 +91,11 @@ Performance
 ---
 
 ## 📈 Results
-
-Model                       | F1 Score
-TF-IDF + Logistic Regression| 0.8056
-DistilBERT (fine-tuned)     | 0.8496
-
+```python
+Model                       | F1 Score  
+TF-IDF + Logistic Regression| 0.8056  
+DistilBERT (fine-tuned)     | 0.8496  
+```
 ---
 
 ## 🔍 Model Comparison (Key Insight)
@@ -112,9 +112,9 @@ Interpretation
 - Baseline relies on keywords ("not", "bad") → predicts negative
 - BERT understands context → predicts slightly positive
 
-## 👉 Conclusion
+### 👉 Conclusion
 
-«Baseline is keyword-based, while BERT captures contextual semantics.»
+"Baseline is keyword-based, while BERT captures contextual semantics."
 
 ---
 
@@ -156,140 +156,17 @@ bert-sentiment-project/
 ```
 ---
 
-## 🚀 API (Model Serving)
-
-This project includes a production-style inference API.
-
-Run Server
-```python
-uvicorn src.api.app:app --reload
----
----
-
-Open API Docs (Swagger UI)
-```python
-http://127.0.0.1:8000/docs
-```
----
-
-Example Request
-
-```python
-POST /predict
-
-{
-  "text": "I feel so happy today!"
-}
-```
----
-
-Example Response
-```python
-{
-  "prediction": 1,
-  "confidence": 0.99
-}
-```
----
-
-Compare Models (Optional Endpoint)
-
-```python
-POST /predict_all
-
-{
-  "text": "It's okay, not great but not bad."
-}
-
-{
-  "baseline": {...},
-  "bert": {...}
-}
-```
-
-
----
-
-## 🧪 Local Testing
-
-Run Baseline Test
-
-python test_run_base.py
-
-Run BERT Test
-
-python test_run_bert.py
-
----
-
-## 🧠 ML Engineering Highlights
-
-- Modular architecture (data / model / training / inference / API)
-- Separation of concerns
-- Reproducible experiments (config-driven)
-- Hyperparameter tuning with Optuna
-- Model comparison & error analysis
-- Production-ready API
-
----
-
-## 💾 Model Saving
-
-- TF-IDF pipeline → "pickle"
-- BERT → HuggingFace "Trainer.save_model()"
-
----
-
-## 🚀 Future Work
-
-- Improve BERT tuning (epochs, scheduling)
-- Try larger models (RoBERTa, BERT-base)
-- Add explainability (SHAP, attention visualization)
-- Deploy API (Render / Docker)
-- Add CI/CD pipeline
-
----
-
-## 🧪 Reproducibility
-
-- Seed: 42
-- Libraries:
-  - PyTorch
-  - Transformers
-  - Scikit-learn
-  - Pandas / NumPy
-  - FastAPI
-
----
-
-## 🇩🇪 Deutsche Zusammenfassung
-
-Dieses Projekt vergleicht klassische Machine-Learning-Methoden (TF-IDF + Logistic Regression) mit modernen Transformer-Modellen (DistilBERT) für die Sentimentanalyse auf einem großen Twitter-Datensatz (640K Samples).
-
-Das feinabgestimmte BERT-Modell erreicht eine F1-Score von 0.85 und übertrifft die Baseline deutlich. Zusätzlich wurde eine API entwickelt, um das Modell in einer realen Umgebung bereitzustellen.
-
----
-
-## 💡 Key Takeaway
-
-«This project goes beyond model training — it demonstrates how to design, evaluate, and deploy machine learning systems in a production-like environment.»
-
-
-## 🐳 Deployment (FastAPI + Docker MLOps Style)
-
-To simulate a production environment, this project includes a lightweight model serving layer using FastAPI and Docker.
-
 ## 🚀 FastAPI Inference Service
 The trained models (TF-IDF baseline and BERT) are exposed via REST API endpoints. 
 
-Run locally:
+Run Server:
 
 ```python
 Bash
 uvicorn src.api.app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-API Documentation (Swagger UI):
+Swagger UI:
 ```python
 http://127.0.0.1:8000/docs
 ```
