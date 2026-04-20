@@ -55,3 +55,6 @@ class BERTfinetuning:
     def test(self):
         test_results = self.trainer.predict(self.tokenized_datasets["test"])
         return print(test_results.metrics)
+
+    def train(self):
+        self.trainer.train()

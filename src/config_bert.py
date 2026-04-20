@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pathlib import Path
 
 
 @dataclass
@@ -8,10 +9,11 @@ class ModelConfig:
     version: str = "0.1.0"
 
 
-# @dataclass
-# class SearchConfig:
-#     n_trials: int = 150
-#     sample_size: int = 100000
+@dataclass
+class PathConfig:
+    BASE_DIR: Path = Path(__file__).resolve().parent.parent
+    SAVED_MODELS_PATH: Path = BASE_DIR / "saved_models"
+    DATA_PATH: Path = BASE_DIR / "data/tweets640k.parquet"
 
 
 # @dataclass
