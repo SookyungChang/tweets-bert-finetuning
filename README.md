@@ -1,7 +1,7 @@
 # 🧠 Production-style Sentiment Analysis System comparing TF-IDF and Fine-tuned BERT with FastAPI deployment
 
-Achieved 0.85 F1 score on 640K tweets using BERT fine-tuning, outperforming a TF-IDF baseline.
-Built as a modular ML pipeline + API service for real-world usage.
+Achieved **0.85 F1 score on 640K tweets using BERT fine-tuning**, outperforming a TF-IDF baseline.
+Built as a **modular ML pipeline + API service for real-world usage**.
 
 ---
 
@@ -59,20 +59,20 @@ Preprocessing
 Best Parameters
 
 ngram_range = (1, 3)
-min_df = 5
-max_features = 29482
-C = 1.01
+min_df = 7
+max_features = 29877
+C = 1.07
 
 Performance
 
-- Validation F1 (macro): 0.7966
+- Validation F1 (macro): 0.7967
 - Test F1 (macro): 0.8056
 
 ---
 
 ### 2. DistilBERT Fine-Tuning
 
-- Model: distilbert-base-uncased-finetuned-sst-2-english
+- Model: "distilbert-base-uncased-finetuned-sst-2-english"
 - Framework: HuggingFace Transformers
 
 Training Setup
@@ -92,9 +92,9 @@ Performance
 
 ## 📈 Results
 
-Model| F1 Score
+Model                       | F1 Score
 TF-IDF + Logistic Regression| 0.8056
-DistilBERT (fine-tuned)| 0.8496
+DistilBERT (fine-tuned)     | 0.8496
 
 ---
 
@@ -119,7 +119,7 @@ Interpretation
 ---
 
 ## 🏗️ Project Structure (Production-Oriented)
-
+```python
 bert-sentiment-project/  
 │  
 ├── data/  
@@ -153,7 +153,7 @@ bert-sentiment-project/
 ├── test_run_base.py  
 ├── test_run_bert.py  
 └── README.md  
-
+```
 ---
 
 ## 🚀 API (Model Serving)
@@ -161,9 +161,9 @@ bert-sentiment-project/
 This project includes a production-style inference API.
 
 Run Server
-
+```python
 uvicorn src.api.app:app --reload
-
+---
 ---
 
 Open API Docs (Swagger UI)
