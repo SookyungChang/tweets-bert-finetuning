@@ -120,40 +120,40 @@ Interpretation
 
 ## 🏗️ Project Structure (Production-Oriented)
 
-bert-sentiment-project/
-│
-├── data/
-│   └── tweets640k.parquet
-│
-├── src/
-│   ├── api/
-│   │   └── app.py              # FastAPI service
-│   │
-│   ├── data/
-│   │   └── preprocess.py
-│   │
-│   ├── models/
-│   │   ├── baseline.py
-│   │   └── bert.py
-│   │
-│   ├── training/
-│   │   ├── train_baseline.py
-│   │   └── train_bert.py
-│   │
-│   ├── inference/
-│   │   ├── predictor_base.py
-│   │   └── predictor_bert.py
-│   │
-│   └── config/
-│       ├── config_base.py
-│       └── config_bert.py
-│
-├── saved_models/
-├── saved_experiments/
-├── notebooks/
-├── test_run_base.py
-├── test_run_bert.py
-└── README.md
+bert-sentiment-project/  
+│  
+├── data/  
+│   └── tweets640k.parquet  
+│  
+├── src/  
+│   ├── api/  
+│   │   └── app.py  
+│   │  
+│   ├── data/  
+│   │   └── preprocess.py  
+│   │  
+│   ├── models/  
+│   │   ├── baseline.py  
+│   │   └── bert.py  
+│   │  
+│   ├── training/  
+│   │   ├── train_baseline.py  
+│   │   └── train_bert.py  
+│   │  
+│   ├── inference/  
+│   │   ├── predictor_base.py  
+│   │   └── predictor_bert.py  
+│   │  
+│   └── config/  
+│       ├── config_base.py  
+│       └── config_bert.py  
+│  
+├── saved_models/  
+├── saved_experiments/  
+├── notebooks/  
+├── test_run_base.py  
+├── test_run_bert.py  
+└── README.md  
 
 ---
 
