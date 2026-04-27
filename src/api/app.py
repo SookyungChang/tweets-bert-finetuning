@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from huggingface_hub import snapshot_download
 from src.config_bert import PathConfig
 from src.inference import predictor_base, predictor_bert
 
@@ -17,8 +18,8 @@ def load_models():
 
     base_model = predictor_base.load_model()
     paths = PathConfig()
-    modelpath = paths.SAVED_MODELS_PATH / "bert-0.1.0/checkpoint-20000"
-    bert_model = predictor_bert.Predictor(modelpath)
+    bert_path = snapshot_download(repo_id="sweetguma/bert-sentiment-model")
+    bert_model = predictor_bert.Predictor(bert_path)
 
 
 # Request: text
