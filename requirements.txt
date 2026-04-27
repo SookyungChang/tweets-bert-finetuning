@@ -1,22 +1,22 @@
-torch
+torch==2.9.1
 torchvision
 torchaudio
 
-transformers
+transformers==5.5.4
 datasets
 evaluate
 
-scikit-learn
-numpy
-pandas
-scipy
+scikit-learn==1.3.2
+numpy==1.26.4
+pandas==2.2.2
+scipy==1.11.4
 
 optuna
 joblib
 
-fastapi
-uvicorn
-pydantic
+fastapi==0.136.0
+uvicorn==0.44.0
+pydantic==2.13.2
 starlette
 python-multipart
 
@@ -25,5 +25,4 @@ fastparquet
 requests
 python-dotenv
 
-tensorboard
 tqdm
