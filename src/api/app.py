@@ -1,19 +1,27 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from src.config_bert import PathConfig
-
 from src.inference import predictor_base, predictor_bert
 
 app = FastAPI()
 
-# 🔥 서버 시작 시 모델 1번만 로드 (중요)
-base_model = predictor_base.load_model()
-paths = PathConfig()
-modelpath = paths.SAVED_MODELS_PATH / "bert-0.1.0/checkpoint-20000"
-bert = predictor_bert.Predictor(modelpath)
+# Global variables
+base_model = None
+bert_model = None
 
 
-# 입력 형식 정의
+# one time run as server starts
+@app.on_event("startup")
+def load_models():
+    global base_model, bert_model
+
+    base_model = predictor_base.load_model()
+    paths = PathConfig()
+    modelpath = paths.SAVED_MODELS_PATH / "bert-0.1.0/checkpoint-20000"
+    bert_model = predictor_bert.Predictor(modelpath)
+
+
+# Request: text
 class TextRequest(BaseModel):
     text: str
 
@@ -24,10 +32,10 @@ def root():
     return {"message": "API is running"}
 
 
-# 🔥 핵심 endpoint
+# endpoint
 @app.post("/predict_all")
 def predict_all(request: TextRequest):
     base_result = predictor_base.predict(base_model, request.text)
-    bert_result = bert.predict(request.text)
+    bert_result = bert_model.predict(request.text)
 
     return {"text": request.text, "baseline": base_result, "bert": bert_result}
