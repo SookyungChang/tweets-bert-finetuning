@@ -27,6 +27,7 @@ def test_all():
     # predict(pipe_path, X_test, y_test)
 
     model = predictor_base.load_model()
+    print(model)
     texts = ["I love this!", "This is terrible", "I'm not sure how I feel"]
 
     for t in texts:

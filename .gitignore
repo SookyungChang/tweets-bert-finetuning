@@ -4,9 +4,8 @@ data/*
 
 not_completed/
 
-saved_models/*
-!saved_models/.gitkeep
-!saved_models/tfidf_logreg_0.1.0.pkl
+saved_models/bert/*
+
 
 *.parquet
 *.csv
