@@ -4,7 +4,7 @@ from pathlib import Path
 
 @dataclass
 class SearchConfig:
-    n_trials: int = 150
+    n_trials: int = 1
     sample_size: int = 100000
 
 
@@ -25,5 +25,5 @@ class ModelConfig:
 
 @dataclass
 class PathConfig:
-    BASE_DIR: Path = Path(__file__).resolve().parent
+    BASE_DIR: Path = Path(__file__).resolve().parent.parent
     SAVE_MODEL_PATH = BASE_DIR / "saved_models/base/"

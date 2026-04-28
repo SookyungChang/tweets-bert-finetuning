@@ -49,6 +49,7 @@ def train(data_path):
         pickle.dump(pipe, f)
 
     print(model_path, f"tfidf_logreg_{model.version}.pkl", "saved")
+    print("Saving to:", model_path.resolve())
 
 
 if __name__ == "__main__":

@@ -3,13 +3,13 @@
         "best_params": {
             "ngram_range": [
                 1,
-                2
+                1
             ],
-            "min_df": 46,
-            "max_features": 6036,
-            "C": 0.02655051336006148
+            "min_df": 40,
+            "max_features": 23332,
+            "C": 0.00100484530502589
         },
-        "f1_score": 0.7591379180845088,
+        "f1_score": 0.7195324436675192,
         "n_trials": 1,
         "sample_size": 100000
     },
