@@ -4,7 +4,7 @@ from pathlib import Path
 
 @dataclass
 class SearchConfig:
-    n_trials: int = 1
+    n_trials: int = 150
     sample_size: int = 100000
 
 
