@@ -6,7 +6,8 @@ from src.config_base import PathConfig, ModelConfig
 def load_model():
     paths = PathConfig()
     model = ModelConfig()
-    model_path = Path(paths.SAVE_MODEL_PATH / f"/tfidf_logreg_{model.version}.pkl")
+    model_path = paths.SAVE_MODEL_PATH / f"tfidf_logreg_{model.version}.pkl"
+
     with open(model_path, "rb") as f:
         model = pickle.load(f)
     return model

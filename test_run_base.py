@@ -21,5 +21,5 @@ def test_inf():
 
 
 if __name__ == "__main__":
-    test_train()
-    # test_inf()
+    # test_train()
+    test_inf()
