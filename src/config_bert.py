@@ -12,7 +12,7 @@ class ModelConfig:
 @dataclass
 class PathConfig:
     BASE_DIR: Path = Path(__file__).resolve().parent.parent
-    SAVED_MODELS_PATH: Path = BASE_DIR / "bert/saved_models"
+    SAVED_MODELS_PATH: Path = BASE_DIR / "saved_models/bert"
     DATA_PATH: Path = BASE_DIR / "data/tweets640k.parquet"
 
 
