@@ -6,17 +6,18 @@ from sklearn.metrics import f1_score
 from src.data.preprocess import build_dataset
 from src.models.baseline import IT_IDF
 from src.experiments.optuna_search import get_best_para
-from src.config_base import SearchConfig, SearchSpace, ModelConfig
+from src.config_base import SearchConfig, SearchSpace, ModelConfig, PathConfig
 
 
 def train(data_path):
-    X, y = build_dataset(data_path)
+    X, y = build_dataset(data_path, type="base")
 
     itidf = IT_IDF(X, y)
 
     config = SearchConfig()
     space = SearchSpace()
     model = ModelConfig()
+    paths = PathConfig()
 
     best_params = get_best_para(
         itidf.X_train, itidf.y_train, itidf.X_dev, itidf.y_dev, config, space, model
@@ -40,11 +41,9 @@ def train(data_path):
 
     print(f"F1 score: {f1}")
 
-    BASE_DIR = Path(__file__).resolve().parent.parent.parent
-    SAVE_MODEL_PATH = BASE_DIR / "saved_models"
-    SAVE_MODEL_PATH.mkdir(exist_ok=True, parents=True)
+    paths.SAVE_MODEL_PATH.mkdir(exist_ok=True, parents=True)
 
-    model_path = SAVE_MODEL_PATH / f"tfidf_logreg_{model.version}.pkl"
+    model_path = paths.SAVE_MODEL_PATH / f"tfidf_logreg_{model.version}.pkl"
 
     with open(model_path, "wb") as f:
         pickle.dump(pipe, f)

@@ -1,10 +1,11 @@
 from src.inference import predictor_base, predictor_bert
-from src.config_bert import PathConfig
+from src.config_bert import PathConfig, ModelConfig
 
 
 def compare_models():
     paths = PathConfig()
-    modelpath = paths.SAVED_MODELS_PATH / "bert-0.1.0/checkpoint-20000"
+    model = ModelConfig()
+    modelpath = paths.SAVED_MODELS_PATH / f"/bert-{model.version}/checkpoint-20000"
     bert = predictor_bert.Predictor(modelpath)
     base_model = predictor_base.load_model()
 

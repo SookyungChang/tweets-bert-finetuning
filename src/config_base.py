@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pathlib import Path
 
 
 @dataclass
@@ -18,5 +19,11 @@ class SearchSpace:
 class ModelConfig:
     seed: int = 42
     max_iter: int = 2000
-    version: str = "0.1.0"
+    version: str = "0.1.1"
     f1_avg: str = "macro"
+
+
+@dataclass
+class PathConfig:
+    BASE_DIR: Path = Path(__file__).resolve().parent
+    SAVE_MODEL_PATH = BASE_DIR / "saved_models/base/"
