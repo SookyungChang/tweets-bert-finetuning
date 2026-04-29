@@ -17,9 +17,8 @@ bert_model = None
 def load_models():
     global base_model, bert_model
 
-    data_path = "data/tweets640k.parquet"
-    train(data_path)
-
+    # data_path = "data/tweets640k.parquet"
+    # train(data_path)
     base_model = predictor_base.load_model()
     paths = PathConfig()
     bert_path = snapshot_download(repo_id="sweetguma/bert-sentiment-model")
