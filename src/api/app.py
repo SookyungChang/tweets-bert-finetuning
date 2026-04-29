@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from huggingface_hub import snapshot_download
+from src.training.train_baseline import train
 from src.config_bert import PathConfig
 from src.inference import predictor_base, predictor_bert
 
@@ -15,6 +16,9 @@ bert_model = None
 @app.on_event("startup")
 def load_models():
     global base_model, bert_model
+
+    data_path = "data/tweets640k.parquet"
+    train(data_path)
 
     base_model = predictor_base.load_model()
     paths = PathConfig()
