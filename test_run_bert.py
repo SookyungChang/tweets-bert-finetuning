@@ -1,6 +1,7 @@
 from src.inference import predictor_base, predictor_bert
 from src.config_bert import PathConfig, ModelConfig
 from huggingface_hub import snapshot_download
+from src.training.train_bert import train
 
 
 def compare_models():
@@ -46,6 +47,9 @@ def compare_models():
 
     print("\nDone.")
 
+def train_model():
+    train()
 
 if __name__ == "__main__":
-    compare_models()
+    # compare_models()
+    train_model()
