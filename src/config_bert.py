@@ -7,8 +7,10 @@ class ModelConfig:
     model_name: str = "distilbert-base-uncased-finetuned-sst-2-english"
     seed: int = 42
     version: str = "0.1.1"
-    num_epochs: int = 3
+    num_epochs: int = 1
     f1_avg: str = "macro"
+    dropout: float = 0.1
+
 
 
 @dataclass
