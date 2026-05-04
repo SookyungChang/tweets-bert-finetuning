@@ -8,6 +8,7 @@ from transformers import Trainer
 from transformers import DataCollatorWithPadding
 from evaluate import load
 
+from src.config_bert import ModelConfig
 
 class BERTfinetuning:
 
@@ -46,8 +47,9 @@ class BERTfinetuning:
     ):  # https://github.com/huggingface/evaluate/blob/main/metrics/f1/f1.py
         logits, labels = eval_pred
         predictions = logits.argmax(axis=-1)
+        model = ModelConfig()
         return self.metric.compute(
-            predictions=predictions, references=labels, average="macro"
+            predictions=predictions, references=labels, average=model.f1_avg
         )
 
     def test(self):
