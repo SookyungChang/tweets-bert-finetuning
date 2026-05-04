@@ -48,7 +48,7 @@ def to_list_data(data_dict):
     return (X, y)
 
 
-def build_dataset(path, type="bert"):
+def build_dataset(path, type="bert", sample_size=None):
     df = load_data(path)
     label_name, text_name = get_names(df)
     df = clean_labels(df)
@@ -56,15 +56,20 @@ def build_dataset(path, type="bert"):
     # Check Imbalance
     print(analyze_label_distribution(data_dict, data_dict["label_name"]))
 
+    if sample_size is not None:
+        for split in ["train", "dev", "test"]:
+            split_df = data_dict[split]
+            if len(split_df) > sample_size:
+                data_dict[split] = split_df.sample(n=sample_size, random_state=42)
+
     if type == "base":
         X, y = to_list_data(data_dict)
         return X, y
     else:
         dataset = DatasetDict(
             {
-                split: Dataset.from_pandas(df)
-                for split, df in data_dict.items()
-                if split in ["train", "test", "dev"]
+                split: Dataset.from_pandas(data_dict[split])
+                for split in ["train", "dev", "test"]
             }
         )
         return dataset
