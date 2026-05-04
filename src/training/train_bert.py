@@ -60,6 +60,7 @@ def train(device=None, sample_size=None, log_name=None):
     print("Before train:", bert.test())
     bert.train()
     print("After train:", bert.test())
+    wandb.finish()
     return bert
 
 
