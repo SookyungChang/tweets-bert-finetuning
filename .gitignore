@@ -11,6 +11,7 @@ saved_models/*
 !saved_models/base/
 !saved_models/base/tfidf_logreg_0.1.0.pkl
 
+*.png
 *.parquet
 *.csv
 *.zip
