@@ -7,8 +7,8 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 
 class Predictor:
-    def __init__(self, model_path):
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    def __init__(self, model_path, device=None):
+        self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
         self.model = AutoModelForSequenceClassification.from_pretrained(model_path).to(self.device)
 
