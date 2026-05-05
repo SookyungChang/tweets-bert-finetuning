@@ -1,6 +1,6 @@
 # --- Data & Models ---
 data/*
-!data/preprocess.py
+!data/data_sources.txt
 
 not_completed/*
 

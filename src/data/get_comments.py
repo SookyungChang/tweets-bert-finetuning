@@ -77,7 +77,8 @@ def filter_english_comments(df):
 
 def comments_save(results):
     paths = PathConfig
-    results.to_csv(paths.DATA_PATH / f"{video_id}_{YoutubeCommentsConfig.MAX_RESULTS}_{YoutubeCommentsConfig.MAX_PAGES}.csv", index=False)
+    results.to_csv(paths.DATA_PATH / f"youtube_comments/{video_id}_{YoutubeCommentsConfig.MAX_RESULTS}_{YoutubeCommentsConfig.MAX_PAGES}.csv", index=False)
+    print(f"Saved {len(results)} English comments to {paths.DATA_PATH / f'youtube_comments/{video_id}_{YoutubeCommentsConfig.MAX_RESULTS}_{YoutubeCommentsConfig.MAX_PAGES}.csv'}")
 
 
 if __name__ == "__main__":
