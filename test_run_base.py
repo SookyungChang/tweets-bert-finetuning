@@ -2,12 +2,13 @@ import os
 from src.training.train_baseline import train
 from src.data.preprocess import build_dataset
 from src.inference.predictor_base import predict
-from src.config_base import PathConfig, ModelConfig
+from src.config import PathConfig
 from src.inference import predictor_base
 
 
 def test_train():
-    data_path = "data/tweets640k.parquet"
+    paths = PathConfig()
+    data_path = paths.TWEETS_PATH / "tweets640k.parquet"
     train(data_path)
 
 

@@ -1,6 +1,6 @@
 # --- Data & Models ---
-data/*
-!data/data_sources.txt
+data/tweets/*
+data/youtube_comments/*
 
 not_completed/*
 

@@ -2,13 +2,14 @@ import os
 
 # Only make GPU 0 visible to this process. This prevents the internal/bad GPU 1
 # from being selected while still allowing a CPU fallback if CUDA is unavailable.
-os.environ["CUDA_VISIBLE_DEVICES"] = ""
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 import torch
 from transformers import TrainingArguments
 from src.data.preprocess import build_dataset
 from src.models.bert import BERTfinetuning
-from src.config_bert import ModelConfig, PathConfig
+from src.config_bert import ModelConfig
+from src.config import PathConfig
 import wandb
 
 
@@ -26,7 +27,8 @@ def train(device=None, sample_size=None, log_name=None):
     if log_name is None:
         log_name = "bert" + "-" + model.version
 
-    dataset = build_dataset(paths.DATA_PATH, type="bert", sample_size=sample_size)
+    data_path = paths.TWEETS_PATH / "tweets640k.parquet"
+    dataset = build_dataset(data_path, type="bert", sample_size=sample_size)
     paths.SAVED_MODELS_PATH.mkdir(parents=True, exist_ok=True)
     output_dir_path = os.path.join(paths.SAVED_MODELS_PATH, f"bert-{model.version}")
     wandb.init(project="bert-finetuning", name=log_name, config=model.__dict__)

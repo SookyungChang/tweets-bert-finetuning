@@ -6,6 +6,8 @@ from pathlib import Path
 class PathConfig:
     BASE_DIR: Path = Path(__file__).resolve().parent.parent
     DATA_PATH: Path = BASE_DIR / "data"
+    TWEETS_PATH: Path = DATA_PATH / "tweets"
+    YOUTUBE_COMMENTS_PATH: Path = DATA_PATH / "youtube_comments"
     SAVED_MODELS_PATH: Path = BASE_DIR / "saved_models"
 
 
