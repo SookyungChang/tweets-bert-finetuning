@@ -1,6 +1,8 @@
 import pandas as pd
 from datasets import Dataset, DatasetDict
-
+from langdetect import detect_langs
+from langdetect.lang_detect_exception import LangDetectException
+import re
 
 def load_data(path):
     return pd.read_parquet(path)
@@ -73,3 +75,35 @@ def build_dataset(path, type="bert", sample_size=None):
             }
         )
         return dataset
+    
+
+
+def remove_urls(text):
+    """Remove any URLs from a comment string."""
+    # Regex pattern that matches http/https links and bare www. addresses
+    url_pattern = r'https?://\S+|www\.\S+'
+    # Replace any matched URLs with an empty string, then strip leftover whitespace
+    return re.sub(url_pattern, '', str(text)).strip()
+
+
+def safe_detect(text):
+    """Try to detect the language of a comment. Returns result or None if uncertain."""
+    
+    # Skip empty or very short texts — too little content to detect reliably
+    if not text or len(str(text)) <= 5:
+        return None
+    
+    try:
+        # detect_langs() returns a list of language guesses with probabilities
+        # We take the top guess [0]
+        res = detect_langs(text)[0]
+        
+        # Only accept if it's English AND the model is highly confident (>90%)
+        if res.lang == 'en' and res.prob > 0.9:
+            return res
+            
+    except LangDetectException:
+        # If detection fails entirely (e.g. unrecognizable characters), just skip it
+        pass
+    
+    return None  # Return None for non-English or low-confidence results
