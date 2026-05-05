@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from huggingface_hub import snapshot_download
 from src.training.train_baseline import train
-from src.config_bert import PathConfig
+from src.config import PathConfig
 from src.inference import predictor_base, predictor_bert
 
 app = FastAPI()

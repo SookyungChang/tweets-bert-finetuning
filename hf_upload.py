@@ -1,5 +1,5 @@
 from huggingface_hub import upload_folder
-from src.config_bert import PathConfig
+from src.config import PathConfig
 
 
 def upload(folder_name):

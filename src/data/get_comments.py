@@ -4,7 +4,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from dotenv import load_dotenv
 from googleapiclient.discovery import build
 import pandas as pd
-from preprocess import remove_urls, safe_detect
+from src.data.preprocess import remove_urls, safe_detect
 from config import PathConfig, YoutubeCommentsConfig
 
 load_dotenv()
