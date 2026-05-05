@@ -35,6 +35,7 @@ fastapi==0.136.0
 uvicorn==0.44.0
 pydantic==2.13.2
 starlette==1.0.0
+mangum==0.21.0       # ← NEW: adapts FastAPI to AWS Lambda
 
 # Utilities
 tqdm==4.67.3
@@ -42,3 +43,7 @@ requests==2.33.1
 PyYAML==6.0.3
 python-dotenv==1.2.2
 pillow==12.1.1
+
+# Database
+SQLAlchemy==2.0.49
+alembic==1.18.4
