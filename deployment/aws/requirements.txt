@@ -14,7 +14,7 @@ starlette==1.0.0
 mangum==0.21.0
 
 # Essential Utilities
-numpy==2.4.4
+numpy
 requests==2.33.1
 python-dotenv==1.2.2
 pillow==12.1.1
