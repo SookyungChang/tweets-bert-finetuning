@@ -41,9 +41,9 @@ Production-ready **modular ML pipeline** with FastAPI inference service, Hugging
 - Subset: 100K samples
 - Best parameters:
   - `ngram_range = (1, 3)`
-  - `min_df = 7`
-  - `max_features = 29,877`
-  - `C = 1.07`
+  - `min_df = 4`
+  - `max_features = 28,056`
+  - `C = 1.02`
 
 **Performance**:
 - Validation F1 (macro): **0.7967**
