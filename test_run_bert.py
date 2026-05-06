@@ -28,7 +28,7 @@ def compare_models():
     print("=" * 60)
 
     for text in texts:
-        bert_result = bert.predict(text)
+        bert_result = bert.predict_text(text)
         base_result = predictor_base.predict(base_model, text)
 
         print(f"\n📝 Text: {text}")
@@ -51,5 +51,5 @@ def train_model():
     train()
 
 if __name__ == "__main__":
-    # compare_models()
-    train_model()
+    compare_models()
+    # train_model()

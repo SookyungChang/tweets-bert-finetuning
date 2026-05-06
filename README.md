@@ -86,8 +86,8 @@ Production-ready **modular ML pipeline** with FastAPI inference service, Hugging
 ```
 Text: "It's okay, not great but not bad."
 
-Baseline (TF-IDF) → pred: 0 (negative)  [conf: 0.57]
-BERT              → pred: 1 (positive)  [conf: 0.88]
+Baseline (TF-IDF) → pred: 0 (negative)  [conf: 0.5635]
+BERT              → pred: 1 (positive)  [conf: 0.8851]
 
 Why? BERT understands the overall positive sentiment despite negative words.
 ```
@@ -242,12 +242,12 @@ python hf_upload.py
 ```
 ## 🧠 Why this is "MLOps-like"
 
-This project includes key production ML concepts:
-✔ Model training pipeline (offline)
-✔ Model inference service (FastAPI)
-✔ Containerized deployment (Docker)
-✔ Reproducibility (requirements + fixed pipeline)
-✔ Separation of training vs serving
+This project includes key production ML concepts:  
+✔ Model training pipeline (offline)  
+✔ Model inference service (FastAPI)  
+✔ Containerized deployment (Docker)  
+✔ Reproducibility (requirements + fixed pipeline)  
+✔ Separation of training vs serving  
 
 ---
 

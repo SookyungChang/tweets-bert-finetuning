@@ -2,7 +2,7 @@
 data/tweets/*
 data/youtube_comments/*
 
-not_completed/*
+test.ipynb
 
 notebooks/wandb/*
 
