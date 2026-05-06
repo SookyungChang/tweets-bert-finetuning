@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir \
     --index-url https://download.pytorch.org/whl/cpu
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -v -r requirements.txt
 
 COPY src/ ./src/
 COPY deployment/huggingface/app.py .
