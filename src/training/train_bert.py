@@ -41,10 +41,10 @@ def train(device=None, sample_size=None, log_name=None):
         logging_steps=logging_steps, 
         run_name=log_name,  # Name for WandB logging
         logging_dir=os.path.join(output_dir_path, "logs"),  # Directory for logs
-        eval_strategy="steps",  # Evaluate at the end of each epoch
-        eval_steps=eval_steps,  
-        save_strategy="steps",
-        save_steps=eval_steps, 
+        eval_strategy="epoch",  # Evaluate at the end of each epoch
+        # eval_steps=eval_steps,  
+        save_strategy="epoch",
+        # save_steps=eval_steps, 
         learning_rate=5e-5,  # *Start with a small learning rate
         per_device_train_batch_size=16,  # Batch size per device
         per_device_eval_batch_size=16,

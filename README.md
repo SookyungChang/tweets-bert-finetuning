@@ -1,238 +1,244 @@
-# 🧠 Production-style Sentiment Analysis System comparing TF-IDF and Fine-tuned BERT with FastAPI deployment
+# 🧠 Production-style Sentiment Analysis: BERT Fine-tuning vs TF-IDF Baseline
 
-Achieved **0.85 F1 score on 640K tweets using BERT fine-tuning**, outperforming a TF-IDF baseline.
-Built as a **modular ML pipeline + API service for real-world usage**.
-
----
-
-## 📊 Overview
-
-This project compares a classical machine learning baseline with a modern transformer-based approach for sentiment classification.
-
-Task
-
-- Binary sentiment classification (positive vs negative)
-
-Dataset
-
-- 640,000 tweets
-
-Models
-
-- TF-IDF + Logistic Regression (baseline)
-- DistilBERT (fine-tuned)
-
-Key Extension (Production)
-
-- Model inference API using FastAPI
-- Modular ML pipeline (data → training → inference → API)
-- Baseline vs BERT comparison analysis
+**0.85 F1 score** on 640K tweets using DistilBERT fine-tuning, significantly outperforming the TF-IDF baseline (0.80 F1).  
+Production-ready **modular ML pipeline** with FastAPI inference service, HuggingFace Hub integration, and multi-cloud deployment (AWS Lambda, HuggingFace Spaces).
 
 ---
 
-## 📁 Dataset
+## 📊 Quick Overview
 
-- Total samples: 640,000
-- Train: 320,000
-- Validation: 160,000
-- Test: 160,000
-- Balanced classes (50% / 50%)
-
-Preprocessing
-
-- Text cleaning ("clean_text")
-- Label normalization (4 → 1)
-- Train / Dev / Test split
+| Aspect | Details |
+|--------|---------|
+| **Task** | Binary sentiment classification (positive vs negative) |
+| **Dataset** | 640,000 tweets + YouTube comments |
+| **Baseline** | TF-IDF + Logistic Regression |
+| **Production Model** | DistilBERT (fine-tuned) |
+| **Best Model F1** | **0.8506** (BERT) vs 0.8056 (TF-IDF) |
 
 ---
 
-## ⚙️ Methods
+## 📁 Dataset Details
 
-### 1. TF-IDF + Logistic Regression
+- **Total samples**: 640,000 tweets
+- **Split**: Train (320K) / Validation (160K) / Test (160K)
+- **Class balance**: 50% positive / 50% negative
+- **Additional data**: YouTube comments (from video ID: SbNDmAJBtyU)
 
-- n-grams: (1, 3)
-- max_features: ~30K
-- Hyperparameter tuning (Optuna)
-  - 150 trials
-  - 100K subset
-
-Best Parameters
-
-ngram_range = (1, 3)
-min_df = 7
-max_features = 29877
-C = 1.07
-
-Performance
-
-- Validation F1 (macro): 0.7967
-- Test F1 (macro): 0.8056
+**Preprocessing**:
+- Text cleaning (via `clean_text` function)
+- Language detection (English only)
+- Label normalization
+- Train/Dev/Test stratified split
 
 ---
 
-### 2. DistilBERT Fine-Tuning
+## ⚙️ Methods & Models
 
-- Model: "distilbert-base-uncased-finetuned-sst-2-english"
-- Framework: HuggingFace Transformers
+### 1️⃣ TF-IDF + Logistic Regression (Baseline)
 
-Training Setup
+**Hyperparameter Tuning** (Optuna):
+- 150 trials
+- Subset: 100K samples
+- Best parameters:
+  - `ngram_range = (1, 3)`
+  - `min_df = 7`
+  - `max_features = 29,877`
+  - `C = 1.07`
 
+**Performance**:
+- Validation F1 (macro): **0.7967**
+- Test F1 (macro): **0.8056**
+
+---
+
+### 2️⃣ DistilBERT Fine-Tuning
+
+**Model**: `distilbert-base-uncased-finetuned-sst-2-english`  
+**Framework**: HuggingFace Transformers + Accelerate
+
+**Training Configuration**:
 - Epochs: 1
 - Batch size: 16
 - Learning rate: 5e-5
 - Weight decay: 0.01
-- Mixed precision (fp16)
+- Mixed precision training (fp16)
+- Optimizer: AdamW
 
-Performance
+**Results**:
+- Pre-fine-tuned: F1 = **0.7194**
+- Post-fine-tuned: F1 = **0.8506** ✨
+- Improvement: +13% F1 score
 
-- Before fine-tuning: F1 = 0.719
-- After fine-tuning: F1 = 0.8496
+**Published**: 
+- Uploaded to HuggingFace Hub @ [sweetguma/bert-sentiment-model](https://huggingface.co/sweetguma/bert-sentiment-model)
+
 
 ---
 
-## 📈 Results
-```python
-Model                       | F1 Score  
-TF-IDF + Logistic Regression| 0.8056  
-DistilBERT (fine-tuned)     | 0.8496  
+## 📈 Model Comparison
+
+| Model | F1 Score | Key Insight |
+|-------|----------|------------|
+| TF-IDF + LogReg | 0.8056 | Keyword-based, fast, interpretable |
+| DistilBERT | **0.8506** | Context-aware, captures nuance |
+
+**Example Prediction Difference**:
 ```
----
-
-## 🔍 Model Comparison (Key Insight)
-
-Example:
-```python
 Text: "It's okay, not great but not bad."
 
-Baseline → pred: 0 (conf: 0.57)
-BERT     → pred: 1 (conf: 0.88)
+Baseline (TF-IDF) → pred: 0 (negative)  [conf: 0.57]
+BERT              → pred: 1 (positive)  [conf: 0.88]
+
+Why? BERT understands the overall positive sentiment despite negative words.
 ```
-Interpretation
-
-- Baseline relies on keywords ("not", "bad") → predicts negative
-- BERT understands context → predicts slightly positive
-
-### 👉 Conclusion
-
-"Baseline is keyword-based, while BERT captures contextual semantics."
 
 ---
 
-## 🏗️ Project Structure (Production-Oriented)
-```python
-bert-sentiment-project/  
-│  
-├── data/  
-│   └── tweets640k.parquet  
-│  
-├── src/  
-│   ├── api/  
-│   │   └── app.py  
-│   │  
-│   ├── data/  
-│   │   └── preprocess.py  
-│   │  
-│   ├── models/  
-│   │   ├── baseline.py  
-│   │   └── bert.py  
-│   │  
-│   ├── training/  
-│   │   ├── train_baseline.py  
-│   │   └── train_bert.py  
-│   │  
-│   ├── inference/  
-│   │   ├── predictor_base.py  
-│   │   └── predictor_bert.py  
-│   │    
-│   ├── config_base.py  
-│   └── config_bert.py  
-│  
-├── saved_models/  
-├── saved_experiments/  
-├── notebooks/  
-├── test_run_base.py  
-├── test_run_bert.py  
-└── README.md  
+## 📂 Project Structure
+
+```
+tweets-bert-finetuning/
+├── src/
+│   ├── __init__.py
+│   ├── config.py                      # Path configuration
+│   ├── config_base.py                 # Baseline model config
+│   ├── config_bert.py                 # BERT model config
+│   ├── data/
+│   │   ├── __init__.py
+│   │   ├── get_comments.py            # YouTube comment fetcher
+│   │   └── preprocess.py              # Text preprocessing
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── baseline.py                # TF-IDF + LogReg model
+│   │   └── bert.py                    # DistilBERT model
+│   ├── training/
+│   │   ├── __init__.py
+│   │   ├── train_baseline.py          # Baseline training pipeline
+│   │   └── train_bert.py              # BERT fine-tuning pipeline
+│   ├── inference/
+│   │   ├── __init__.py
+│   │   ├── predictor_base.py          # Baseline inference
+│   │   └── predictor_bert.py          # BERT inference
+│   └── experiments/
+│       ├── __init__.py
+│       └── optuna_search.py           # Hyperparameter tuning
+│
+├── deployment/
+│   ├── aws/
+│   │   ├── app.py                     # AWS Lambda handler
+│   │   └── Dockerfile
+│   └── huggingface/
+│       └── Dockerfile                 # HF Spaces deployment
+│
+├── data/
+│   ├── tweets/                        # Tweet dataset
+│   ├── youtube_comments/              # Comment dataset
+│   └── data_source.txt                # Data source references
+│
+├── saved_models/
+│   ├── base/                          # Baseline model artifacts
+│   └── bert/                          # BERT model checkpoints
+│
+├── notebooks/
+│   ├── exploration.ipynb              # EDA & analysis
+│   └── wandb/                         # W&B experiment logs
+│
+├── saved_experiments/
+│   └── tfidf_history.json             # Optuna trial history
+│
+├── test_run_base.py                   # Baseline test script
+├── test_run_bert.py                   # BERT test script
+├── test_app.py                        # API test script
+├── hf_upload.py                       # HF Hub uploader
+├── requirements.txt                   # Core dependencies
+├── requirements_full.txt               # Full environment
+└── README.md                          # This file
 ```
 ---
 
 ## 🚀 FastAPI Inference Service
-The trained models (TF-IDF baseline and BERT) are exposed via REST API endpoints. 
 
-Run Server:
+Both models are exposed via **REST API endpoints** for real-time inference.
 
-```python
-Bash
-uvicorn src.api.app:app --host 0.0.0.0 --port 8000 --reload
+### Local Setup
+
+**1. Install dependencies**:
+```bash
+pip install -r requirements.txt
 ```
 
-Swagger UI:
-```python
-http://127.0.0.1:8000/docs
+**2. Run the FastAPI server** (AWS flavor):
+```bash
+cd deployment/aws
+python app.py
+# or:
+uvicorn app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-##  📡 REST API Concept
-REST API = A way for different systems to communicate over HTTP
-Your model becomes a service, not just a script
-Input: text
-Output: prediction + confidence
+**3. Access Swagger UI**:
+```
+http://localhost:8000/docs
+```
 
-Example:
-```python
-JSON
-POST /predict
+### API Endpoints
+
+**GET `/`** - Web UI for interactive predictions
+
+**POST `/predict`** - Single text prediction
+```json
 {
   "text": "I love this product!"
 }
 ```
 
-Response:
-```python
-JSON
+**Response**:
+```json
 {
   "prediction": 1,
-  "confidence": 0.99
+  "confidence": 0.99,
+  "model": "bert"
 }
 ```
 
-## 🐳 Dockerization (Reproducible Deployment)
-To ensure reproducibility across environments, the model API is containerized.
-📄 Dockerfile
-```python
-Dockerfile
-FROM python:3.10-slim
+---
 
-WORKDIR /app
+## 🐳 Containerized Deployment
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+### Option 1: AWS Lambda (ECR)
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+```bash
+# Build
+docker build -t sentiment-api:latest -f deployment/aws/Dockerfile .
 
-COPY . .
+# Run locally
+docker run -p 8000:8000 sentiment-api:latest
 
-CMD ["uvicorn", "src.api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+# Push to AWS ECR
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <ECR_URI>
+docker tag sentiment-api:latest <ECR_URI>/sentiment-api:latest
+docker push <ECR_URI>/sentiment-api:latest
 ```
 
-## ▶️ Build & Run Docker Container
+### Option 2: HuggingFace Spaces
 
-Build image:
-```python
-Bash
-docker build -t sentiment-api .
+```bash
+# Build & push to HF
+docker build -t sentiment-api:latest -f deployment/huggingface/Dockerfile .
+# Push to HF (requires repo setup)
 ```
 
-Run container:
+---
+
+## 📦 Model Distribution
+
+Models are versioned and hosted on **HuggingFace Hub**:
+- 🤗 [sweetguma/bert-sentiment-model](https://huggingface.co/sweetguma/bert-sentiment-model)
+
+**Automatic download** on first inference (cached locally).
+
 ```python
-Bash
-docker run -p 8000:8000 sentiment-api
-```
-Now API is accessible at:
-```python
-http://localhost:8000/docs
+# Upload new model version
+python hf_upload.py
 ```
 ## 🧠 Why this is "MLOps-like"
 
@@ -243,22 +249,154 @@ This project includes key production ML concepts:
 ✔ Reproducibility (requirements + fixed pipeline)
 ✔ Separation of training vs serving
 
-## ⚠️ Design Decision (Important)
-Training is not inside Docker
-Only inference is containerized
-Reason:
-Training may require GPU / different environments
-Inference should be lightweight and portable
+---
 
-## 🔥 Extension Idea (Advanced MLOps)
-Future improvements:
-Add CI/CD (GitHub Actions)
-Add model versioning
-Deploy via:
-Render / AWS / GCP
-Add logging + monitoring
-Add batch inference endpoint
+## 📚 Usage Examples
 
+### 1. Train a Model from Scratch
 
-## 💡 Final Insight
-This project demonstrates a full machine learning lifecycle: from data preprocessing → model training → evaluation → API deployment → containerization.
+**Baseline**:
+```bash
+python -m src.training.train_baseline
+```
+
+**BERT**:
+```bash
+python -m src.training.train_bert
+```
+
+### 2. Run Inference Locally
+
+**Quick test**:
+```bash
+python test_run_bert.py
+python test_run_base.py
+```
+
+**Compare both models**:
+```python
+from src.inference import predictor_base, predictor_bert
+
+base = predictor_base.load_model()
+bert = predictor_bert.Predictor("path/to/bert/model")
+
+text = "This product is amazing!"
+print(f"Baseline: {base.predict(text)}")
+print(f"BERT: {bert.predict(text)}")
+```
+
+### 3. Hyperparameter Tuning
+
+```bash
+python -m src.experiments.optuna_search
+```
+
+### 4. Fetch YouTube Comments
+
+```bash
+python -c "from src.data.get_comments import get_comments; get_comments()"
+```
+
+---
+
+## 🏗️ Architecture Decisions
+
+### Why This Design?
+
+✅ **Separation of Concerns**
+- Training pipeline separate from serving
+- Models loaded once at startup
+- Stateless API (horizontal scalability)
+
+✅ **Reproducibility**
+- Fixed requirements + versions
+- Containerization
+- W&B experiment tracking
+
+✅ **Production-Ready**
+- FastAPI for async performance
+- Graceful error handling
+- HuggingFace Hub integration
+- Multi-cloud support
+
+### Training vs Serving
+
+Training runs offline (may use GPU); API servers are stateless and portable.
+
+---
+
+## 🧪 Experiment Tracking
+
+**W&B Integration** (`notebooks/wandb/`):
+- Track hyperparameters, metrics, loss curves
+- Compare model runs
+- Version experiments
+- Auto-logged during training
+
+---
+
+## 📋 Core Dependencies
+
+```txt
+torch==2.9.1
+transformers==5.5.4
+accelerate==1.13.0
+fastapi==latest
+scikit-learn==1.8.0
+pandas==3.0.1
+optuna==latest
+huggingface_hub==1.11.0
+```
+
+Install all:
+```bash
+pip install -r requirements.txt
+pip install -r requirements_full.txt  # Includes visualization & APIs
+```
+
+---
+
+## 🔥 What's Production-Ready?
+
+✅ Modular code structure  
+✅ Type hints & configuration management  
+✅ Docker + FastAPI  
+✅ Model versioning (HuggingFace Hub)  
+✅ Experiment tracking (W&B)  
+✅ Error handling & validation  
+✅ Multi-deployment (AWS, HF Spaces)  
+⚠️ CI/CD pipeline (planned)  
+⚠️ Comprehensive monitoring (partial)  
+⚠️ Unit test coverage (to improve)  
+
+---
+
+## 🚀 Future Improvements
+
+- [ ] GitHub Actions CI/CD
+- [ ] Batch inference endpoint
+- [ ] Model A/B testing
+- [ ] API rate limiting & auth
+- [ ] Advanced logging & tracing
+- [ ] Performance benchmarking
+
+---
+
+## 💡 Key Insight
+
+**Production ML isn't just about model accuracy.** This project demonstrates:
+- Data pipeline → Model training → Evaluation → API serving → Containerization
+- Comparison between classical (TF-IDF) and modern (BERT) approaches
+- Real-world deployment considerations (versioning, scalability, reproducibility)
+
+---
+
+## 📄 License & Attribution
+
+Dataset: Twitter sentiment data (public)
+Models: DistilBERT (HuggingFace), HuggingFace Hub for distribution
+
+---
+
+**Last Updated**: May 2026  
+**Status**: ✅ Production-ready for sentiment analysis inference

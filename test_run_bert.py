@@ -51,5 +51,5 @@ def train_model():
     train()
 
 if __name__ == "__main__":
-    compare_models()
-    # train_model()
+    # compare_models()
+    train_model()
