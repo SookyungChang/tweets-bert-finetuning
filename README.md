@@ -1,7 +1,7 @@
 # 🧠 Production-style Sentiment Analysis: BERT Fine-tuning vs TF-IDF Baseline
 
 **0.85 F1 score** on 640K tweets using DistilBERT fine-tuning, significantly outperforming the TF-IDF baseline (0.80 F1).  
-Production-ready **modular ML pipeline** with FastAPI inference service, HuggingFace Hub integration, and multi-cloud deployment (AWS Lambda, HuggingFace Spaces).
+Production-ready **modular ML pipeline** with FastAPI inference service, HuggingFace Hub integration, and multi-cloud deployment (AWS EC2, HuggingFace Spaces).
 
 ---
 
@@ -125,7 +125,7 @@ tweets-bert-finetuning/
 │
 ├── deployment/
 │   ├── aws/
-│   │   ├── app.py                     # AWS Lambda handler
+│   │   ├── app.py                     # AWS EC2 handler
 │   │   └── Dockerfile
 │   └── huggingface/
 │       └── Dockerfile                 # HF Spaces deployment
@@ -167,7 +167,7 @@ Both models are exposed via **REST API endpoints** for real-time inference.
 pip install -r requirements.txt
 ```
 
-**2. Run the FastAPI server** (AWS flavor):
+**2. Run the FastAPI server** (AWS EC2 flavor):
 ```bash
 cd deployment/aws
 python app.py
@@ -204,27 +204,18 @@ http://localhost:8000/docs
 
 ## 🐳 Containerized Deployment
 
-### Option 1: AWS Lambda (ECR)
+### Option 1: AWS EC2 (ECR)
 
 ```bash
-# Build
 docker build -t sentiment-api:latest -f deployment/aws/Dockerfile .
 
-# Run locally
 docker run -p 8000:8000 sentiment-api:latest
-
-# Push to AWS ECR
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <ECR_URI>
-docker tag sentiment-api:latest <ECR_URI>/sentiment-api:latest
-docker push <ECR_URI>/sentiment-api:latest
 ```
 
 ### Option 2: HuggingFace Spaces
 
 ```bash
-# Build & push to HF
 docker build -t sentiment-api:latest -f deployment/huggingface/Dockerfile .
-# Push to HF (requires repo setup)
 ```
 
 ---
