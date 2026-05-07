@@ -14,6 +14,8 @@ huggingface_hub==1.11.0
 google-api-python-client==2.195.0
 google-auth==2.50.0
 
+
+
 # Language Detection
 langdetect==1.0.9
 
