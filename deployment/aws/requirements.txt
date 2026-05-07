@@ -17,15 +17,16 @@ google-auth==2.50.0
 # Language Detection
 langdetect==1.0.9
 
+
 # Data & Science
-numpy
-pandas
-scipy
-scikit-learn
+numpy==2.4.4
+pandas==3.0.1
+scipy==1.17.1
+scikit-learn==1.8.0
 
 # Visualization & Explainability
 matplotlib==3.10.8
-shap
+shap==0.51.0
 
 # API
 fastapi==0.136.0
