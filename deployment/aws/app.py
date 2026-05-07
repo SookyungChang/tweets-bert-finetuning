@@ -17,23 +17,28 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import io
 import base64
-
+from contextlib import asynccontextmanager
 from src.inference import predictor_base, predictor_bert
 from src.data.get_comments import get_comments, filter_english_comments
 from mangum import Mangum
 
-app = FastAPI()
+async def lifespan(app: FastAPI):
+    # Everything before yield runs at STARTUP
 
-# --- Global models ---
-base_model = None
-bert_model = None
-
-@app.on_event("startup")
-def load_models():
+    # --- Global models ---
     global base_model, bert_model
     base_model = predictor_base.load_model()
     bert_path = snapshot_download(repo_id="sweetguma/bert-sentiment-model")
     bert_model = predictor_bert.Predictor(bert_path)
+    print("✅ Models loaded!")
+    
+    yield  # ← app runs here
+    
+    # Everything after yield runs at SHUTDOWN
+    print("🛑 Shutting down...")
+    # clean up if needed (optional)
+
+app = FastAPI(lifespan=lifespan)
 
 # ─────────────────────────────────────────
 # Shared styles
