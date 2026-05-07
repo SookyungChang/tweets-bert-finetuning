@@ -17,7 +17,7 @@ COPY deployment/aws/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src/ ./src/
-COPY app.py .
+COPY deployment/aws/app.py .
 
 EXPOSE 8000
 
