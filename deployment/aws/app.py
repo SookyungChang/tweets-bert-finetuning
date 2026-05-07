@@ -1,8 +1,12 @@
 # app.py
+from pathlib import Path
+import sys
 import os
 os.environ["HF_HOME"] = "/tmp/huggingface"
 os.environ["TRANSFORMERS_CACHE"] = "/tmp/huggingface"
-
+current_file = Path(__file__).resolve()
+parent_dir = current_file.parent.parent.parent
+sys.path.append(str(parent_dir))
 from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel

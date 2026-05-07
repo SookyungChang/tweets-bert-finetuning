@@ -1,23 +1,49 @@
-# Deep Learning / Transformers (Inference only)
+# Deep Learning / Transformers
 torch
 torchvision
 torchaudio
 transformers==5.5.4
+accelerate==1.13.0
+datasets==4.8.4
+evaluate==0.4.6
+safetensors==0.7.0
 tokenizers==0.22.2
 huggingface_hub==1.11.0
 
-# API & Lambda Integration
+# Google / YouTube API
+google-api-python-client==2.195.0
+google-auth==2.50.0
+
+# Language Detection
+langdetect==1.0.9
+
+# Data & Science
+numpy
+pandas
+scipy
+scikit-learn
+
+# Visualization & Explainability
+matplotlib==3.10.8
+shap
+
+# API
 fastapi==0.136.0
 uvicorn==0.44.0
 pydantic==2.13.2
 starlette==1.0.0
-mangum==0.21.0
+mangum==0.21.0       # ← NEW: adapts FastAPI to AWS Lambda
 
-# Essential Utilities
-numpy
+# Utilities
+tqdm==4.67.3
 requests==2.33.1
+PyYAML==6.0.3
 python-dotenv==1.2.2
 pillow==12.1.1
-PyYAML==6.0.3
 
-matplotlib==3.10.8
+# Database
+SQLAlchemy==2.0.49
+alembic==1.18.4
+
+
+python-multipart
