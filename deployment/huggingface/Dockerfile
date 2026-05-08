@@ -13,12 +13,12 @@ RUN pip install --no-cache-dir \
     torch torchvision torchaudio \
     --index-url https://download.pytorch.org/whl/cpu
 
-COPY deployment/aws/requirements.txt .
+COPY deployment/huggingface/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src/ ./src/
 COPY saved_models/ ./saved_models/
-COPY deployment/aws/app.py .
+COPY deployment/huggingface/app.py .
 
 ENV HF_HOME=/tmp/huggingface
 ENV TRANSFORMERS_CACHE=/tmp/huggingface
