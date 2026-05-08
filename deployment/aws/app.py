@@ -40,9 +40,13 @@ async def lifespan(app: FastAPI):
     
     yield  # ← app runs here
     
-    # Everything after yield runs at SHUTDOWN
+    # SHUTDOWN
     print("🛑 Shutting down...")
-    # clean up if needed (optional)
+    # Fix leaked semaphore warning from langdetect/torch
+    import multiprocessing
+    for child in multiprocessing.active_children():
+        child.terminate()
+        child.join()
 
 app = FastAPI(lifespan=lifespan)
 
