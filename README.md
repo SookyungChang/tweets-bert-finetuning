@@ -71,6 +71,7 @@ Production-ready **modular ML pipeline** with FastAPI inference service, Hugging
 
 **Published**: 
 - Uploaded to HuggingFace Hub @ [sweetguma/bert-sentiment-model](https://huggingface.co/sweetguma/bert-sentiment-model)
+- Try the live app on HuggingFace Spaces: [sweetguma/sentiment-app](https://huggingface.co/spaces/sweetguma/sentiment-app)
 
 
 ---
@@ -217,6 +218,9 @@ docker run -p 8000:8000 sentiment-api:latest
 ```bash
 docker build -t sentiment-api:latest -f deployment/huggingface/Dockerfile .
 ```
+
+Try the live app on HuggingFace Spaces:
+- https://huggingface.co/spaces/sweetguma/sentiment-app
 
 ---
 
