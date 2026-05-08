@@ -2,25 +2,31 @@
 from pathlib import Path
 import sys
 import os
+
 os.environ["HF_HOME"] = "/tmp/huggingface"
 os.environ["TRANSFORMERS_CACHE"] = "/tmp/huggingface"
 current_file = Path(__file__).resolve()
 parent_dir = current_file.parent.parent.parent
 sys.path.append(str(parent_dir))
+
 from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from huggingface_hub import snapshot_download
+from mangum import Mangum
+
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import pandas as pd
 import io
 import base64
+
 from contextlib import asynccontextmanager
 from src.inference import predictor_base, predictor_bert
 from src.data.get_comments import get_comments, filter_english_comments
-from mangum import Mangum
+from src.utils.youtube_analyzer import extract_video_id
+
 
 async def lifespan(app: FastAPI):
     # Everything before yield runs at STARTUP
@@ -246,6 +252,8 @@ def youtube_home():
 async def youtube_analyze(video_id: str = Form(...)):
     """Fetch comments, run BERT, return chart."""
     try:
+        video_id = extract_video_id(video_id)
+
         df = get_comments(video_id, max_results=100, max_pages=3)
         df = filter_english_comments(df)
 
