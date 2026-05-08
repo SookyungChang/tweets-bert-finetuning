@@ -232,19 +232,94 @@ def text_predict(text: str = Form(...)):
 
 @app.get("/youtube", response_class=HTMLResponse)
 def youtube_home():
-    """Input form for YouTube video ID."""
     return f"""
-    <html><head>{CSS}</head>
+    <html><head>{CSS}
+    <style>
+        #loading {{
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255,255,255,0.95);
+            z-index: 999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }}
+        #loading.show {{
+            display: flex;
+        }}
+        .spinner {{
+            width: 60px;
+            height: 60px;
+            border: 6px solid #f0f0f0;
+            border-top: 6px solid #2c3e50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }}
+        @keyframes spin {{
+            0%   {{ transform: rotate(0deg); }}
+            100% {{ transform: rotate(360deg); }}
+        }}
+        .loading-text {{
+            font-size: 18px;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }}
+        .loading-sub {{
+            font-size: 13px;
+            color: #aaa;
+        }}
+    </style>
+    </head>
     <body>
+        <!-- Loading overlay -->
+        <div id="loading">
+            <div class="spinner"></div>
+            <p class="loading-text">⏳ Analyzing comments...</p>
+            <p class="loading-sub">Fetching comments from YouTube and running BERT model</p>
+            <p class="loading-sub">This may take 30–60 seconds on our server</p>
+        </div>
+
         <h1>🎬 YouTube Sentiment Analyzer</h1>
         <div class="card">
-            <form method="post" action="/youtube/analyze">
-                <input type="text" name="video_id" placeholder="Enter YouTube Video ID (e.g. dQw4w9WgXcQ)" required />
+            <form id="analyzeForm" method="post" action="/youtube/analyze"
+                  onsubmit="showLoading()">
+                <input
+                    type="text"
+                    name="video_id"
+                    placeholder="Paste YouTube URL or Video ID (e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ)"
+                    required
+                />
                 <br>
                 <button type="submit">Analyze Comments</button>
             </form>
         </div>
         <a class="back" href="/">← Back to home</a>
+
+        <script>
+            function showLoading() {{
+                // Show loading overlay when form is submitted
+                document.getElementById('loading').classList.add('show');
+
+                // Cycle through messages so it feels alive
+                const messages = [
+                    "⏳ Fetching YouTube comments...",
+                    "🔍 Filtering English comments...",
+                    "🤖 Running BERT sentiment model...",
+                    "📊 Building your chart...",
+                    "Almost there..."
+                ];
+                let i = 0;
+                const textEl = document.querySelector('.loading-text');
+                setInterval(() => {{
+                    i = (i + 1) % messages.length;
+                    textEl.textContent = messages[i];
+                }}, 4000);  // change message every 4 seconds
+            }}
+        </script>
     </body></html>
     """
 
