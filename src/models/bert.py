@@ -2,13 +2,19 @@ import os
 
 import torch
 
-from transformers import AutoConfig, AutoModelForSequenceClassification, AutoTokenizer, Trainer, DataCollatorWithPadding
+from transformers import (
+    AutoConfig,
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+    Trainer,
+    DataCollatorWithPadding,
+)
 from evaluate import load
 
 from src.config_bert import ModelConfig
 
-class BERTfinetuning:
 
+class BERTfinetuning:
     def __init__(self, dataset, training_args):
         self.model = ModelConfig()
         self.model_name = self.model.model_name
@@ -19,11 +25,13 @@ class BERTfinetuning:
         )  # 16-Core multi Processor
         config = AutoConfig.from_pretrained(self.model_name, num_labels=2)
         # ------------- Optional: Adjust dropout rates in the config if needed -------------
-        # config.hidden_dropout_prob = self.model.dropout 
+        # config.hidden_dropout_prob = self.model.dropout
         # config.attention_probs_dropout_prob = self.model.dropout
         # config.dropout = self.model.dropout
         # config.attention_dropout = self.model.dropout
-        self.model = AutoModelForSequenceClassification.from_pretrained(self.model_name, config=config)
+        self.model = AutoModelForSequenceClassification.from_pretrained(
+            self.model_name, config=config
+        )
         self.training_args = training_args
         self.data_collator = DataCollatorWithPadding(tokenizer=self.tokenizer)
         self.trainer = Trainer(

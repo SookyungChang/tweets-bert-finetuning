@@ -12,6 +12,6 @@ class PathConfig:
 
 
 class YoutubeCommentsConfig:
-    VIDEO_ID: str = "SbNDmAJBtyU" # https://youtu.be/SbNDmAJBtyU?si=9Fqc1fK7c1vYLkpS
+    VIDEO_ID: str = "SbNDmAJBtyU"  # https://youtu.be/SbNDmAJBtyU?si=9Fqc1fK7c1vYLkpS
     MAX_RESULTS: int = 100
     MAX_PAGES: int = 3

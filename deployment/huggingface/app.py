@@ -15,7 +15,8 @@ from pydantic import BaseModel
 from huggingface_hub import snapshot_download
 
 import matplotlib
-matplotlib.use('Agg')
+
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
 import io
@@ -36,16 +37,18 @@ async def lifespan(app: FastAPI):
     bert_path = snapshot_download(repo_id="sweetguma/bert-sentiment-model")
     bert_model = predictor_bert.Predictor(bert_path)
     print("✅ Models loaded!")
-    
+
     yield  # ← app runs here
-    
+
     # SHUTDOWN
     print("🛑 Shutting down...")
     # Fix leaked semaphore warning from langdetect/torch
     import multiprocessing
+
     for child in multiprocessing.active_children():
         child.terminate()
         child.join()
+
 
 app = FastAPI(lifespan=lifespan)
 
@@ -116,6 +119,7 @@ CSS = """
 # Helper
 # ─────────────────────────────────────────
 
+
 def make_chart(df: pd.DataFrame) -> str:
     label_names = {0: "Negative", 1: "Positive"}
     counts = df["sentiment_label"].value_counts().sort_index()
@@ -124,7 +128,7 @@ def make_chart(df: pd.DataFrame) -> str:
     ax.bar(
         [label_names[i] for i in counts.index],
         counts.values,
-        color=["#e74c3c", "#2ecc71"]
+        color=["#e74c3c", "#2ecc71"],
     )
     ax.set_xlabel("Sentiment")
     ax.set_ylabel("Count")
@@ -136,9 +140,11 @@ def make_chart(df: pd.DataFrame) -> str:
     plt.close()
     return base64.b64encode(buf.read()).decode("utf-8")
 
+
 # ─────────────────────────────────────────
 # Routes
 # ─────────────────────────────────────────
+
 
 @app.get("/", response_class=HTMLResponse)
 def home():
@@ -164,7 +170,9 @@ def home():
     </body></html>
     """
 
+
 # ── App 1: Text comparison ──────────────
+
 
 @app.get("/text", response_class=HTMLResponse)
 def text_home():
@@ -184,6 +192,7 @@ def text_home():
     </body></html>
     """
 
+
 @app.post("/text/predict", response_class=HTMLResponse)
 def text_predict(text: str = Form(...)):
     """Run both models and show comparison table."""
@@ -198,7 +207,7 @@ def text_predict(text: str = Form(...)):
 
         def conf_bar(conf):
             pct = round(conf * 100, 1)
-            return f'{pct}%'
+            return f"{pct}%"
 
         return f"""
         <html><head>{CSS}</head>
@@ -214,13 +223,13 @@ def text_predict(text: str = Form(...)):
                     </tr>
                     <tr>
                         <td>📊 Baseline (TF-IDF)</td>
-                        <td>{label_html(base_result['prediction'])}</td>
-                        <td>{conf_bar(base_result['confidence'])}</td>
+                        <td>{label_html(base_result["prediction"])}</td>
+                        <td>{conf_bar(base_result["confidence"])}</td>
                     </tr>
                     <tr>
                         <td>🤖 BERT</td>
-                        <td>{label_html(bert_result['prediction'])}</td>
-                        <td>{conf_bar(bert_result['confidence'])}</td>
+                        <td>{label_html(bert_result["prediction"])}</td>
+                        <td>{conf_bar(bert_result["confidence"])}</td>
                     </tr>
                 </table>
             </div>
@@ -231,7 +240,9 @@ def text_predict(text: str = Form(...)):
     except Exception as e:
         return f"<h3>Error: {str(e)}</h3><a href='/text'>← Go back</a>"
 
+
 # ── App 2: YouTube analyzer ─────────────
+
 
 @app.get("/youtube", response_class=HTMLResponse)
 def youtube_home():
@@ -326,6 +337,7 @@ def youtube_home():
     </body></html>
     """
 
+
 @app.post("/youtube/analyze", response_class=HTMLResponse)
 async def youtube_analyze(video_id: str = Form(...)):
     """Fetch comments, run BERT, return chart."""
@@ -336,7 +348,9 @@ async def youtube_analyze(video_id: str = Form(...)):
         df = filter_english_comments(df)
 
         if df.empty:
-            return f"<h3>No English comments found.</h3><a href='/youtube'>← Go back</a>"
+            return (
+                f"<h3>No English comments found.</h3><a href='/youtube'>← Go back</a>"
+            )
 
         df_predicted = bert_model.predict_df(df)
 
@@ -365,10 +379,13 @@ async def youtube_analyze(video_id: str = Form(...)):
     except Exception as e:
         return f"<h3>Error: {str(e)}</h3><a href='/youtube'>← Go back</a>"
 
+
 # ── API endpoint (JSON) ─────────────────
+
 
 class TextRequest(BaseModel):
     text: str
+
 
 @app.post("/predict_all")
 def predict_all(request: TextRequest):

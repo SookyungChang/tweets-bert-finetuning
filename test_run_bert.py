@@ -47,8 +47,10 @@ def compare_models():
 
     print("\nDone.")
 
+
 def train_model():
     train()
+
 
 if __name__ == "__main__":
     compare_models()
