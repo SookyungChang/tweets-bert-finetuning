@@ -7,13 +7,14 @@ import os
 
 DB_PATH = os.getenv("DB_PATH", "data/Results.db")
 
-def save_results(video_id: str, df: pd.DataFrame):
+def save_results(video_id: str, df: pd.DataFrame, sentiment_label: int):
     """Save full prediction DataFrame to SQLite."""
     conn = sqlite3.connect(DB_PATH)
     
     # Add metadata columns
     df = df.copy()
     df['video_id']    = video_id
+    df['sentiment_label'] = sentiment_label
     df['analyzed_at'] = datetime.now(timezone.utc).isoformat()
     
     # Save to table — creates table automatically if not exists
