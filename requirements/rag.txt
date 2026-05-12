@@ -1,0 +1,10 @@
+-r base.txt
+
+chromadb
+sentence-transformers
+bertopic
+hdbscan
+umap-learn
+
+langchain
+langchain-community

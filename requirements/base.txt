@@ -1,0 +1,17 @@
+
+# Data & Science
+numpy==2.4.4
+pandas==3.0.1
+scipy==1.17.1
+scikit-learn==1.8.0
+
+# Language Detection
+langdetect==1.0.9
+
+# others
+joblib
+python-dotenv
+PyYAML
+tqdm
+requests
+

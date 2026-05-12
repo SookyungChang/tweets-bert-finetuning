@@ -1,0 +1,11 @@
+-r base.txt
+
+torch
+torchvision
+torchaudio
+transformers==5.5.4
+accelerate==1.13.0
+datasets==4.8.4
+evaluate==0.4.6
+safetensors==0.7.0
+tokenizers==0.22.2

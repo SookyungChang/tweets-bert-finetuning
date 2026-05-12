@@ -1,0 +1,9 @@
+-r inference.txt
+
+# API
+fastapi==0.136.0
+uvicorn==0.44.0
+pydantic==2.13.2
+starlette==1.0.0
+mangum==0.21.0       # ← NEW: adapts FastAPI to AWS Lambda
+python-multipart
