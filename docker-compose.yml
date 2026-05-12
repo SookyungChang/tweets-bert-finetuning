@@ -29,3 +29,30 @@ services:
 
     security_opt:
       - seccomp=unconfined
+
+  rag:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.cpu
+
+    container_name: sentiment-rag
+
+    volumes:
+      - .:/workspace # Mount the current directory to /workspace in the container
+      - rag_cache:/root/.cache # To aviod downloading the same models multiple times
+
+    working_dir: /workspace
+
+    stdin_open: true
+    tty: true
+
+    ports: 
+      - "8001:8001"
+
+    environment:
+      - PYTHONUNBUFFERED=1
+      - HF_HOME=/root/.cache/huggingface
+      - TRANSFORMERS_CACHE=/root/.cache/huggingface
+
+volumes:
+  rag_cache:
