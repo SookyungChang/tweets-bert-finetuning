@@ -3,6 +3,7 @@ data/tweets/*
 data/youtube_comments/*
 
 test.ipynb
+requirements.txt
 
 notebooks/wandb/*
 
