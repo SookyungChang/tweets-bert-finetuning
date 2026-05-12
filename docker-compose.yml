@@ -1,0 +1,31 @@
+services:
+  rocm-dev:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.rocm
+
+    container_name: sentiment-rocm-dev
+
+    volumes:
+      - .:/workspace
+
+    working_dir: /workspace
+
+    stdin_open: true
+    tty: true
+
+    devices:
+      - /dev/kfd
+      - /dev/dri
+
+    group_add:
+      - video
+
+    ipc: host
+    shm_size: "8gb"
+
+    cap_add:
+      - SYS_PTRACE
+
+    security_opt:
+      - seccomp=unconfined
