@@ -1,7 +1,14 @@
 # streamlit_app.py
+import sys
+from pathlib import Path
+
 import streamlit as st
 import pandas as pd
 from huggingface_hub import snapshot_download
+
+current_file = Path(__file__).resolve()
+parent_dir = current_file.parent.parent.parent
+sys.path.append(str(parent_dir))
 
 from src.data.get_comments import get_comments, filter_english_comments
 from src.inference.predictor_bert import Predictor
