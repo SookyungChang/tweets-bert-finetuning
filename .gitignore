@@ -4,6 +4,7 @@ data/youtube_comments/*
 
 test.ipynb
 requirementsfull.txt
+version_match.py
 
 notebooks/wandb/*
 test.py
