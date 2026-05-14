@@ -1,4 +1,4 @@
-from langchain_ollama import ChatOllama
+from langchain_groq import ChatGroq
 from langchain_chroma import Chroma
 from langchain_classic.chains import create_retrieval_chain
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -10,7 +10,11 @@ from langchain_core.prompts import ChatPromptTemplate
 
 
 def ask_to_llm(query: str, sentiment_label: int, topic: int, num_k: int = 5):
-    llm = ChatOllama(model="llama3", temperature=0)
+    llm = ChatGroq(
+        model="llama-3.1-8b-instant",  # Llama 3.1 8B (very fast)
+        temperature=0,
+    )
+    # local embedding model (no charge)
     embeddings = HuggingFaceEmbeddings(
         model_name="all-MiniLM-L6-v2", model_kwargs={"device": "cpu"}
     )
@@ -18,6 +22,7 @@ def ask_to_llm(query: str, sentiment_label: int, topic: int, num_k: int = 5):
         persist_directory=str(PathConfig.VECTORSTORE_PATH),
         embedding_function=embeddings,
     )
+    # create retriever with filter for sentiment_label and topic
     retriever = vectorstore.as_retriever(
         search_kwargs={
             "filter": {
@@ -39,12 +44,14 @@ def ask_to_llm(query: str, sentiment_label: int, topic: int, num_k: int = 5):
             ("human", "{input}"),
         ]
     )
+    # create chain to combine retrieved documents into context for LLM
     combine_docs_chain = create_stuff_documents_chain(llm, prompt)
-
     retrieval_chain = create_retrieval_chain(retriever, combine_docs_chain)
 
+    # invoke the chain with the query
     response = retrieval_chain.invoke({"input": query})
 
     print("### AI Answer ###")
-    print(response["answer"])
-    print(response["context"])
+    print(response["answer"])  # print the final answer from the LLM
+    print("\n### Retrieved Context ###")
+    print(response["context"])  # print the retrieved context for debugging
