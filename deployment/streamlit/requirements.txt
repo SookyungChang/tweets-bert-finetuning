@@ -17,11 +17,18 @@ chromadb==1.5.9
 sentence-transformers==5.5.0
 
 # Deep Learning / Transformers
+huggingface_hub==1.14.0
+# INFERENCE 
+torch==2.11.0
+torchaudio==2.11.0
+torchvision==0.26.0
 transformers==5.5.4
 accelerate==1.13.0
+datasets==4.8.4
+evaluate==0.4.6
 safetensors==0.7.0
 tokenizers==0.22.2
-huggingface_hub==1.14.0
+
 
 # Topic modeling
 bertopic==0.17.4
