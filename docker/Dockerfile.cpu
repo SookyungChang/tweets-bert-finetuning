@@ -14,4 +14,3 @@ COPY requirements/base.txt requirements/
 RUN pip install -r requirements/analysis-cpu.txt
 
 CMD ["/bin/bash"]
-# CMD ["python", "-m", "rag_service.app"]
