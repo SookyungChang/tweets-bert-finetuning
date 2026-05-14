@@ -42,12 +42,11 @@ def get_comments(video_id, max_results, max_pages):
             # Store only the fields we care about
             comments.append(
                 {
-                    # 'author': comment['authorDisplayName'],  # Uncomment to include author name
+                    "author": comment["authorDisplayName"],
                     "text": comment["textDisplay"],  # The comment text
                     "likeCount": comment["likeCount"],  # Number of likes on the comment
-                    "publishedAt": comment[
-                        "publishedAt"
-                    ],  # Timestamp when comment was posted
+                    "publishedAt": comment["publishedAt"],  # When posted
+                    "commentId": item["id"],  # Unique ID for the comment thread
                 }
             )
 
