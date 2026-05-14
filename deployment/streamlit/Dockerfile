@@ -15,13 +15,13 @@ RUN pip install --no-cache-dir \
     --index-url https://download.pytorch.org/whl/cpu
 
 # Install dependencies
-COPY deployment/streamlit/requirements.txt .
+COPY /deployment/streamlit/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy source code
 COPY src/ ./src/
 COPY saved_models/ ./saved_models/
-COPY deployment/streamlit/streamlit_app.py .
+COPY /deployment/streamlit/streamlit_app.py .
 
 # HuggingFace cache
 ENV HF_HOME=/tmp/huggingface
@@ -38,3 +38,4 @@ EXPOSE 7860
 CMD ["streamlit", "run", "streamlit_app.py", \
      "--server.port=7860", \
      "--server.address=0.0.0.0", \
+     "--server.headless=true"]
