@@ -26,13 +26,14 @@ def get_topics(
     topics, probs = topic_model.fit_transform(df_sentiment["text"].tolist())
     # ↑ add .tolist() — BERTopic works better with lists than pandas Series
 
-    new_topics = topic_model.reduce_outliers(
-        df_sentiment["text"].tolist(), topics, strategy="c-tf-idf"
-    )
+    if -1 in topics:
+        new_topics = topic_model.reduce_outliers(
+            df_sentiment["text"].tolist(), topics, strategy="c-tf-idf"
+        )
+        topic_model.update_topics(df_sentiment["text"].tolist(), topics=new_topics)
+    else:
+        new_topics = topics
 
-    topic_model.update_topics(df_sentiment["text"].tolist(), topics=new_topics)
-
-    # df_sentiment['topic'] = topics
     df_sentiment["topic"] = new_topics
     df_sentiment["topic_probability"] = probs
 
