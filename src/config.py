@@ -9,8 +9,15 @@ class PathConfig:
     TWEETS_PATH: Path = DATA_PATH / "tweets"
     YOUTUBE_COMMENTS_PATH: Path = DATA_PATH / "youtube_comments"
     SAVED_MODELS_PATH: Path = BASE_DIR / "saved_models"
+    VECTORSTORE_PATH: Path = BASE_DIR / "DB"
 
 
+@dataclass
+class urlConfig:
+    trained_model_id = "sweetguma/bert-sentiment-model"
+
+
+@dataclass
 class YoutubeCommentsConfig:
     VIDEO_ID: str = "SbNDmAJBtyU"  # https://youtu.be/SbNDmAJBtyU?si=9Fqc1fK7c1vYLkpS
     MAX_RESULTS: int = 100
