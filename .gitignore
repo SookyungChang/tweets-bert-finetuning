@@ -6,7 +6,7 @@ test.ipynb
 requirementsfull.txt
 
 notebooks/wandb/*
-
+test.py
 DB/*
 wandb/*
 
