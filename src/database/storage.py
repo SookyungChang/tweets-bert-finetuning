@@ -46,62 +46,65 @@ def save_results(
             if_exists="replace",
             index=False,
         )
-        # table_exists = (
-        #     conn.execute(
-        #         "SELECT count(name) FROM sqlite_master WHERE type='table' AND name='comment_results'"
-        #     ).fetchone()[0]
-        #     == 1
-        # )
-
-        # if not table_exists:
-        #     df.to_sql("comment_results", con=conn, if_exists="append", index=False)
-        # else:
-        #     df.to_sql(
-        #         "temp_comment_results", con=conn, if_exists="replace", index=False
-        #     )
-        #     conn.execute("""
-        #         INSERT INTO comment_results
-        #         SELECT * FROM temp_comment_results
-        #         WHERE NOT EXISTS (
-        #             SELECT 1 FROM comment_results
-        #             WHERE comment_results.commentId = temp_comment_results.commentId
-        #         )
-        #     """)
-        #     conn.execute("DROP TABLE temp_comment_results")
 
     print(f"✅ Saved {len(df)} comments for video {video_id}")
 
 
-def save_to_vectors():
-    with sqlite3.connect(DB_PATH) as conn:
-        query = """
-        SELECT * FROM comment_results_positive
-        UNION ALL
-        SELECT * FROM comment_results_negative
-        """
-        df = pd.read_sql(query, con=conn)
+def save_to_vectors(if_only=None):
+    if if_only == 1:
+        with sqlite3.connect(DB_PATH) as conn:
+            query = """
+            SELECT * FROM comment_results_positive
+            """
+            df = pd.read_sql(query, con=conn)
 
+    elif if_only == 0:
+        with sqlite3.connect(DB_PATH) as conn:
+            query = """
+            SELECT * FROM comment_results_negative
+            """
+            df = pd.read_sql(query, con=conn)
+
+    else:
+        with sqlite3.connect(DB_PATH) as conn:
+            query = """
+            SELECT * FROM comment_results_positive
+            UNION ALL
+            SELECT * FROM comment_results_negative
+            """
+            df = pd.read_sql(query, con=conn)
+
+    existing_ids = set()
     documents = []
-    for _, row in df.iterrows():
-        doc = Document(
-            page_content=row["text"],
-            metadata={
-                "commentId": row["commentId"],
-                "author": row["author"],
-                "likeCount": row["likeCount"],
-                "publishedAt": row["publishedAt"],
-                "video_id": row["video_id"],
-                "sentiment_label": row["sentiment_label"],
-                "topic": row["topic"],
-            },
-        )
-        documents.append(doc)
 
-    vectorstore = Chroma.from_documents(
-        documents=documents,
-        embedding=HuggingFaceEmbeddings(
-            model_name="all-MiniLM-L6-v2", model_kwargs={"device": "cpu"}
-        ),
-        persist_directory=str(PathConfig.VECTORSTORE_PATH),
-    )
+    for _, row in df.iterrows():
+        if row["commentId"] not in existing_ids:
+            doc = Document(
+                page_content=row["text"],
+                metadata={
+                    "commentId": row["commentId"],
+                    "author": row["author"],
+                    "likeCount": row["likeCount"],
+                    "publishedAt": row["publishedAt"],
+                    "video_id": row["video_id"],
+                    "sentiment_label": row["sentiment_label"],
+                    "topic": row["topic"],
+                },
+            )
+            documents.append(doc)
+            existing_ids.add(row["commentId"])
+
+    if documents:
+        doc_ids = [doc.metadata["commentId"] for doc in documents]
+        vectorstore = Chroma.from_documents(
+            documents=documents,
+            ids=doc_ids,
+            embedding=HuggingFaceEmbeddings(
+                model_name="all-MiniLM-L6-v2", model_kwargs={"device": "cpu"}
+            ),
+            persist_directory=str(PathConfig.VECTORSTORE_PATH),
+        )
+    else:
+        print("No new unique documents to add.")
+
     return vectorstore
