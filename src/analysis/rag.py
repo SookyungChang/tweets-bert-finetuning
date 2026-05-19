@@ -51,7 +51,4 @@ def ask_to_llm(query: str, sentiment_label: int, topic: int, num_k: int = 5):
     # invoke the chain with the query
     response = retrieval_chain.invoke({"input": query})
 
-    print("### AI Answer ###")
-    print(response["answer"])  # print the final answer from the LLM
-    print("\n### Retrieved Context ###")
-    print(response["context"])  # print the retrieved context for debugging
+    return response
