@@ -13,22 +13,16 @@ RUN pip install --no-cache-dir \
     torch torchvision torchaudio \
     --index-url https://download.pytorch.org/whl/cpu
 
-COPY deployment/huggingface/requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src/ ./src/
 COPY saved_models/ ./saved_models/
-
-# ← Copy all 4 files instead of just app.py
-COPY deployment/huggingface/main.py .
-COPY deployment/huggingface/routes.py .
-COPY deployment/huggingface/service.py .
-COPY deployment/huggingface/web_ui.py .
+COPY app.py .
 
 ENV HF_HOME=/tmp/huggingface
 ENV TRANSFORMERS_CACHE=/tmp/huggingface
 
 EXPOSE 7860
 
-# ← main:app instead of app:app
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860"]
