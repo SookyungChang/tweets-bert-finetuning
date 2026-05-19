@@ -50,7 +50,7 @@ def save_results(
     print(f"✅ Saved {len(df)} comments for video {video_id}")
 
 
-def save_to_vectors(if_only=None):
+def save_to_vectors(if_only=None, embedding_model=None):
     if if_only == 1:
         with sqlite3.connect(DB_PATH) as conn:
             query = """
@@ -96,12 +96,16 @@ def save_to_vectors(if_only=None):
 
     if documents:
         doc_ids = [doc.metadata["commentId"] for doc in documents]
+
+        if embedding_model is None:
+            embedding_model = HuggingFaceEmbeddings(
+                model_name="all-MiniLM-L6-v2", model_kwargs={"device": "cpu"}
+            )
+
         vectorstore = Chroma.from_documents(
             documents=documents,
             ids=doc_ids,
-            embedding=HuggingFaceEmbeddings(
-                model_name="all-MiniLM-L6-v2", model_kwargs={"device": "cpu"}
-            ),
+            embedding=embedding_model,
             persist_directory=str(PathConfig.VECTORSTORE_PATH),
         )
     else:
