@@ -1,7 +1,7 @@
 # streamlit_app.py
 import sys
 from pathlib import Path
-
+import hdbscan
 import streamlit as st
 import pandas as pd
 from huggingface_hub import snapshot_download
@@ -32,6 +32,13 @@ def load_model():
     return Predictor(bert_path)
 
 
+@st.cache_resource
+def load_hdbscan_model(min_cluster_size):
+    return hdbscan.HDBSCAN(
+        min_cluster_size=min_cluster_size, metric="euclidean", prediction_data=True
+    )
+
+
 # ─────────────────────────────────────────
 # Helper
 # ─────────────────────────────────────────
@@ -54,10 +61,14 @@ def process_video(video_id: str, bert_model) -> pd.DataFrame:
 
         for label in df_sen["sentiment_label"].unique():
             count = len(df_sen[df_sen["sentiment_label"] == label])
-            size = len(str(count)) + 2
+            size = len(str(count)) + 1
 
+            hdbscan_model = load_hdbscan_model(min_cluster_size=size)
             df_add, topic_model = get_topics(
-                df_sen, sentiment_label=label, min_cluster_size=size
+                df_sen,
+                sentiment_label=label,
+                min_cluster_size=size,
+                hdbscan_model=hdbscan_model,
             )
 
             # Show topic summary
@@ -74,7 +85,12 @@ def process_video(video_id: str, bert_model) -> pd.DataFrame:
                 sentiment_label=label,
             )
             all_dfs.append(df_add)
-
+        if 0 not in df_sen["sentiment_label"].values:
+            save_to_vectors(1)
+        elif 1 not in df_sen["sentiment_label"].values:
+            save_to_vectors(0)
+        else:
+            save_to_vectors()
     st.success(f"✅ Processed {len(df_sen)} comments!")
     return pd.concat(all_dfs), topic_summary
 
@@ -126,8 +142,8 @@ with tab1:
                 counts = df_full["sentiment_label"].value_counts()
                 col1, col2, col3 = st.columns(3)
                 col1.metric("Total Comments", len(df_full))
-                col2.metric("✅ Positive", int(counts.get(1, 0)))
-                col3.metric("❌ Negative", int(counts.get(0, 0)))
+                col2.metric("❌ Negative", int(counts.get(0, 0)))
+                col3.metric("✅ Positive", int(counts.get(1, 0)))
 
                 # Bar chart
                 st.bar_chart(counts.rename(index={0: "Negative", 1: "Positive"}))
@@ -216,15 +232,7 @@ with tab2:
 
                     # AI Answer
                     st.subheader("🧠 AI Answer")
-                    st.markdown(
-                        f"""
-                        <div style="background:#f0f9ff; padding:20px;
-                                    border-radius:10px; border-left:4px solid #2c3e50;">
-                            {response["answer"]}
-                        </div>
-                        """,
-                        unsafe_allow_html=True,
-                    )
+                    st.write(response["answer"])
 
                     # Retrieved context
                     with st.expander("📄 Retrieved Comments (Context)"):
