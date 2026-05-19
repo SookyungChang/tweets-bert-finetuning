@@ -8,6 +8,7 @@ def get_topics(
     df: pd.DataFrame,
     sentiment_label: int,
     min_cluster_size: int = 10,  # ← add with default value
+    hdbscan_model=None,
 ):
     df_sentiment = df[df["sentiment_label"] == sentiment_label].copy()
     # ↑ add .copy() to avoid SettingWithCopyWarning
@@ -16,9 +17,10 @@ def get_topics(
     if len(df_sentiment) < min_cluster_size:
         return df_sentiment, None
 
-    hdbscan_model = hdbscan.HDBSCAN(
-        min_cluster_size=min_cluster_size, metric="euclidean", prediction_data=True
-    )
+    if hdbscan_model is None:
+        hdbscan_model = hdbscan.HDBSCAN(
+            min_cluster_size=min_cluster_size, metric="euclidean", prediction_data=True
+        )
     topic_model = BERTopic(
         # language="english",
         hdbscan_model=hdbscan_model,
