@@ -1,70 +1,67 @@
 services:
-  rocm-dev:
+  # rocm-dev:
+  #   build:
+  #     context: .
+  #     dockerfile: docker/Dockerfile.rocm
+
+  #   container_name: sentiment-rocm-dev
+
+  #   volumes:
+  #     - .:/workspace
+
+  #   working_dir: /workspace
+
+  #   stdin_open: true
+  #   tty: true
+
+  #   devices:
+  #     - /dev/kfd
+  #     - /dev/dri
+
+  #   group_add:
+  #     - video
+
+  #   ipc: host
+  #   shm_size: "8gb"
+
+  #   cap_add:
+  #     - SYS_PTRACE
+
+  #   security_opt:
+  #     - seccomp=unconfined
+
+  # rag:
+  #   build:
+  #     context: .
+  #     dockerfile: docker/Dockerfile.cpu
+
+  #   container_name: sentiment-rag
+
+  #   volumes:
+  #     - .:/workspace # Mount the current directory to /workspace in the container
+  #     - rag_cache:/root/.cache # To aviod downloading the same models multiple times
+
+  #   working_dir: /workspace
+
+  #   stdin_open: true
+  #   tty: true
+
+  #   ports: 
+  #     - "8001:8001"
+
+  #   environment:
+  #     - PYTHONUNBUFFERED=1
+  #     - HF_HOME=/root/.cache/huggingface
+  #     - TRANSFORMERS_CACHE=/root/.cache/huggingface
+
+  gradio-app:
     build:
       context: .
-      dockerfile: docker/Dockerfile.rocm
-
-    container_name: sentiment-rocm-dev
-
-    volumes:
-      - .:/workspace
-
-    working_dir: /workspace
-
-    stdin_open: true
-    tty: true
-
-    devices:
-      - /dev/kfd
-      - /dev/dri
-
-    group_add:
-      - video
-
-    ipc: host
-    shm_size: "8gb"
-
-    cap_add:
-      - SYS_PTRACE
-
-    security_opt:
-      - seccomp=unconfined
-
-  rag:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.cpu
-
-    container_name: sentiment-rag
-
-    volumes:
-      - .:/workspace # Mount the current directory to /workspace in the container
-      - rag_cache:/root/.cache # To aviod downloading the same models multiple times
-
-    working_dir: /workspace
-
-    stdin_open: true
-    tty: true
-
-    ports: 
-      - "8001:8001"
-
-    environment:
-      - PYTHONUNBUFFERED=1
-      - HF_HOME=/root/.cache/huggingface
-      - TRANSFORMERS_CACHE=/root/.cache/huggingface
-
-  streamlit-app:
-    build:
-      context: .
-      dockerfile: deployment/streamlit/Dockerfile  
-    container_name: sentiment-streamlit
-    volumes:
-      - .:/workspace        
-      - rag_cache:/root/.cache 
-    working_dir: /workspace
+      dockerfile: deployment/huggingface/gradio/Dockerfile  
+    container_name: sentiment-gradio
+    working_dir: /app
     ports:
-      - "8501:8501"         
+      - "7860:7860"         
     env_file:
       - .env               
     stdin_open: true
