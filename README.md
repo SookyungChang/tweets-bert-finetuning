@@ -27,6 +27,9 @@ A new Gradio app at `deployment/huggingface/gradio/rag_app.py` enables:
 
 This makes the project not just a sentiment classifier, but also an interactive comment analysis assistant.
 
+Try the live app on HuggingFace Spaces:
+- https://huggingface.co/spaces/sweetguma/sentiment-rag-app
+
 ---
 
 ## 📁 Dataset Details
