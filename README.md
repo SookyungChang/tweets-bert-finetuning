@@ -1,7 +1,6 @@
-# 🧠 Production-style Sentiment Analysis: BERT Fine-tuning vs TF-IDF Baseline
+# 🧠 Production-style Sentiment Analysis: BERT Fine-tuning + RAG YouTube Comment QA
 
-**0.85 F1 score** on 640K tweets using DistilBERT fine-tuning, significantly outperforming the TF-IDF baseline (0.80 F1).  
-Production-ready **modular ML pipeline** with FastAPI inference service, HuggingFace Hub integration, and multi-cloud deployment (AWS EC2, HuggingFace Spaces).
+**0.85 F1 score** on 640K tweets using DistilBERT fine-tuning, significantly outperforming the TF-IDF baseline (0.80 F1). This repository combines a modular ML pipeline with a live **RAG-powered YouTube comment analyzer** deployed via HuggingFace Spaces.
 
 ---
 
@@ -9,11 +8,24 @@ Production-ready **modular ML pipeline** with FastAPI inference service, Hugging
 
 | Aspect | Details |
 |--------|---------|
-| **Task** | Binary sentiment classification (positive vs negative) |
+| **Task** | Binary sentiment classification (positive vs negative) + comment-level RAG query support |
 | **Dataset** | 640,000 tweets + YouTube comments |
 | **Baseline** | TF-IDF + Logistic Regression |
 | **Production Model** | DistilBERT (fine-tuned) |
 | **Best Model F1** | **0.8506** (BERT) vs 0.8056 (TF-IDF) |
+
+---
+
+## ✨ New Feature: RAG-powered YouTube Comment QA
+
+A new Gradio app at `deployment/huggingface/gradio/rag_app.py` enables:
+- YouTube comment scraping from a video ID or URL
+- BERT sentiment analysis on each comment
+- BERTopic topic modeling for positive and negative comment groups
+- Vector DB creation + semantic retrieval using `langchain_huggingface`
+- Question answering over retrieved comments with RAG
+
+This makes the project not just a sentiment classifier, but also an interactive comment analysis assistant.
 
 ---
 
@@ -49,8 +61,6 @@ Production-ready **modular ML pipeline** with FastAPI inference service, Hugging
 - Validation F1 (macro): **0.7967**
 - Test F1 (macro): **0.8056**
 
----
-
 ### 2️⃣ DistilBERT Fine-Tuning
 
 **Model**: `distilbert-base-uncased-finetuned-sst-2-english`  
@@ -69,10 +79,9 @@ Production-ready **modular ML pipeline** with FastAPI inference service, Hugging
 - Post-fine-tuned: F1 = **0.8506** ✨
 - Improvement: +13% F1 score
 
-**Published**: 
+**Published**:
 - Uploaded to HuggingFace Hub @ [sweetguma/bert-sentiment-model](https://huggingface.co/sweetguma/bert-sentiment-model)
 - Try the live app on HuggingFace Spaces: [sweetguma/sentiment-app](https://huggingface.co/spaces/sweetguma/sentiment-app)
-
 
 ---
 
@@ -86,11 +95,8 @@ Production-ready **modular ML pipeline** with FastAPI inference service, Hugging
 **Example Prediction Difference**:
 ```
 Text: "It's okay, not great but not bad."
-
 Baseline (TF-IDF) → pred: 0 (negative)  [conf: 0.5635]
 BERT              → pred: 1 (positive)  [conf: 0.8851]
-
-Why? BERT understands the overall positive sentiment despite negative words.
 ```
 
 ---
@@ -120,55 +126,53 @@ tweets-bert-finetuning/
 │   │   ├── __init__.py
 │   │   ├── predictor_base.py          # Baseline inference
 │   │   └── predictor_bert.py          # BERT inference
-│   └── experiments/
-│       ├── __init__.py
-│       └── optuna_search.py           # Hyperparameter tuning
-│
+│   ├── analysis/
+│   │   ├── rag.py                     # RAG query integration
+│   │   └── topic_modeling.py          # BERTopic pipeline
+│   └── database/
+│       └── storage.py                 # Persist comment + vector stores
 ├── deployment/
 │   ├── aws/
 │   │   ├── app.py                     # AWS EC2 handler
 │   │   └── Dockerfile
-│   └── huggingface/
-│       └── Dockerfile                 # HF Spaces deployment
-│
+│   ├── huggingface/
+│   │   ├── app.py                     # HF Spaces FastAPI deployment
+│   │   ├── Dockerfile                 # HF Spaces deployment
+│   │   └── gradio/
+│   │       ├── rag_app.py             # RAG Gradio app for comment QA
+│   │       ├── Dockerfile.rag         # Gradio Docker config
+│   │       └── requirements_rag.txt   # RAG service dependencies
 ├── data/
 │   ├── tweets/                        # Tweet dataset
 │   ├── youtube_comments/              # Comment dataset
 │   └── data_source.txt                # Data source references
-│
 ├── saved_models/
 │   ├── base/                          # Baseline model artifacts
 │   └── bert/                          # BERT model checkpoints
-│
 ├── notebooks/
 │   ├── exploration.ipynb              # EDA & analysis
-│   └── wandb/                         # W&B experiment logs
-│
 ├── saved_experiments/
 │   └── tfidf_history.json             # Optuna trial history
-│
 ├── test_run_base.py                   # Baseline test script
 ├── test_run_bert.py                   # BERT test script
-├── test_app.py                        # API test script
+├── test.py                            # General test runner
 ├── hf_upload.py                       # HF Hub uploader
-├── requirements.txt                   # Core dependencies
-├── requirements_full.txt               # Full environment
+├── requirementsfull.txt               # Full dependencies
 └── README.md                          # This file
 ```
+
 ---
 
-## 🚀 FastAPI Inference Service
-
-Both models are exposed via **REST API endpoints** for real-time inference.
+## 🚀 FastAPI & Gradio Inference Services
 
 ### Local Setup
 
-**1. Install dependencies**:
+1. Install dependencies:
 ```bash
-pip install -r requirements.txt
+pip install -r requirementsfull.txt
 ```
 
-**2. Run the FastAPI server** (AWS EC2 flavor):
+2. Run the FastAPI server:
 ```bash
 cd deployment/aws
 python app.py
@@ -176,34 +180,23 @@ python app.py
 uvicorn app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-**3. Access Swagger UI**:
+3. Access Swagger UI:
 ```
 http://localhost:8000/docs
 ```
 
-### API Endpoints
+### Local RAG Gradio App
 
-**GET `/`** - Web UI for interactive predictions
-
-**POST `/predict`** - Single text prediction
-```json
-{
-  "text": "I love this product!"
-}
+Run the new comment analyzer locally from the Gradio app folder:
+```bash
+cd deployment/huggingface/gradio
+python rag_app.py
 ```
 
-**Response**:
-```json
-{
-  "prediction": 1,
-  "confidence": 0.99,
-  "model": "bert"
-}
-```
-
----
-
-## 🐳 Containerized Deployment
+This launches a UI where you can:
+- enter a YouTube video URL or ID
+- process comments with BERT sentiment and BERTopic
+- ask natural language questions using RAG
 
 ### Option 1: AWS EC2 (ECR)
 
@@ -218,6 +211,8 @@ docker run -p 8000:8000 sentiment-api:latest
 ```bash
 docker build -t sentiment-api:latest -f deployment/huggingface/Dockerfile .
 ```
+
+Deploy the RAG-enabled Gradio app with `deployment/huggingface/gradio/Dockerfile.rag` for HuggingFace Spaces or local container testing.
 
 Try the live app on HuggingFace Spaces:
 - https://huggingface.co/spaces/sweetguma/sentiment-app
@@ -235,14 +230,17 @@ Models are versioned and hosted on **HuggingFace Hub**:
 # Upload new model version
 python hf_upload.py
 ```
+
+---
+
 ## 🧠 Why this is "MLOps-like"
 
-This project includes key production ML concepts:  
-✔ Model training pipeline (offline)  
-✔ Model inference service (FastAPI)  
-✔ Containerized deployment (Docker)  
-✔ Reproducibility (requirements + fixed pipeline)  
-✔ Separation of training vs serving  
+This project includes key production ML concepts:
+- Model training pipeline separate from serving
+- BERT inference service with FastAPI
+- RAG-enabled comment analysis via Gradio
+- Containerized deployment for AWS and HuggingFace Spaces
+- Reproducibility with requirements and fixed pipeline
 
 ---
 
@@ -274,7 +272,6 @@ from src.inference import predictor_base, predictor_bert
 
 base = predictor_base.load_model()
 bert = predictor_bert.Predictor("path/to/bert/model")
-
 text = "This product is amazing!"
 print(f"Baseline: {base.predict(text)}")
 print(f"BERT: {bert.predict(text)}")
@@ -301,22 +298,18 @@ python -c "from src.data.get_comments import get_comments; get_comments()"
 ✅ **Separation of Concerns**
 - Training pipeline separate from serving
 - Models loaded once at startup
-- Stateless API (horizontal scalability)
+- Stateless API and interactive Gradio app
 
 ✅ **Reproducibility**
 - Fixed requirements + versions
 - Containerization
-- W&B experiment tracking
+- Model versioning via HuggingFace
 
 ✅ **Production-Ready**
 - FastAPI for async performance
-- Graceful error handling
-- HuggingFace Hub integration
+- Gradio RAG app for exploratory QA
+- Graceful error handling and validation
 - Multi-cloud support
-
-### Training vs Serving
-
-Training runs offline (may use GPU); API servers are stateless and portable.
 
 ---
 
@@ -326,7 +319,6 @@ Training runs offline (may use GPU); API servers are stateless and portable.
 - Track hyperparameters, metrics, loss curves
 - Compare model runs
 - Version experiments
-- Auto-logged during training
 
 ---
 
@@ -341,28 +333,28 @@ scikit-learn==1.8.0
 pandas==3.0.1
 optuna==latest
 huggingface_hub==1.11.0
+gradio==latest
+langchain_huggingface==latest
+hdbscan==latest
 ```
 
 Install all:
 ```bash
-pip install -r requirements.txt
-pip install -r requirements_full.txt  # Includes visualization & APIs
+pip install -r requirementsfull.txt
+pip install -r requirements/analysis-cpu.txt
 ```
 
 ---
 
 ## 🔥 What's Production-Ready?
 
-✅ Modular code structure  
-✅ Type hints & configuration management  
-✅ Docker + FastAPI  
-✅ Model versioning (HuggingFace Hub)  
-✅ Experiment tracking (W&B)  
-✅ Error handling & validation  
-✅ Multi-deployment (AWS, HF Spaces)  
-⚠️ CI/CD pipeline (planned)  
-⚠️ Comprehensive monitoring (partial)  
-⚠️ Unit test coverage (to improve)  
+✅ Modular code structure
+✅ Type hints & configuration management
+✅ Docker + FastAPI + Gradio
+✅ Model versioning (HuggingFace Hub)
+✅ RAG-enabled interactive analytics
+✅ Multi-deployment (AWS, HF Spaces)
+⚠️ Unit test coverage (to improve)
 
 ---
 
@@ -379,10 +371,10 @@ pip install -r requirements_full.txt  # Includes visualization & APIs
 
 ## 💡 Key Insight
 
-**Production ML isn't just about model accuracy.** This project demonstrates:
+**Production ML isn't just about accuracy.** This project demonstrates:
 - Data pipeline → Model training → Evaluation → API serving → Containerization
-- Comparison between classical (TF-IDF) and modern (BERT) approaches
-- Real-world deployment considerations (versioning, scalability, reproducibility)
+- Classical vs modern NLP modeling
+- Interactive RAG-based analysis for real-world comments
 
 ---
 
@@ -394,4 +386,4 @@ Models: DistilBERT (HuggingFace), HuggingFace Hub for distribution
 ---
 
 **Last Updated**: May 2026  
-**Status**: ✅ Production-ready for sentiment analysis inference
+**Status**: ✅ Production-ready for sentiment analysis and RAG comment QA
