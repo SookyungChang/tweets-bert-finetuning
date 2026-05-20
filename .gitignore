@@ -8,6 +8,7 @@ version_match.py
 
 notebooks/wandb/*
 test.py
+export_model.py
 app_test.py
 DB/*
 wandb/*
