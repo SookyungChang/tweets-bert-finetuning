@@ -13,6 +13,10 @@ from langchain_core.documents import Document
 DB_PATH = os.getenv("DB_PATH", PathConfig.DATA_PATH / "Results.db")
 labels = {0: "negative", 1: "positive"}
 
+db_dir = os.path.dirname(DB_PATH)
+if db_dir and not os.path.exists(db_dir):
+    os.makedirs(db_dir, exist_ok=True)
+
 
 def save_results(
     video_id: str, df: pd.DataFrame, topic_info: pd.DataFrame, sentiment_label: int
