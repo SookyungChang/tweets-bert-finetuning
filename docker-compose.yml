@@ -54,18 +54,49 @@ services:
   #     - HF_HOME=/root/.cache/huggingface
   #     - TRANSFORMERS_CACHE=/root/.cache/huggingface
 
-  gradio-app:
+  # gradio-app:
+  #   build:
+  #     context: .
+  #     dockerfile: deployment/huggingface/gradio/Dockerfile  
+  #   container_name: sentiment-gradio
+  #   working_dir: /app
+  #   ports:
+  #     - "7860:7860"         
+  #   env_file:
+  #     - .env               
+  #   stdin_open: true
+  #   tty: true
+
+  explo-dev:
     build:
       context: .
-      dockerfile: deployment/huggingface/gradio/Dockerfile  
-    container_name: sentiment-gradio
-    working_dir: /app
-    ports:
-      - "7860:7860"         
-    env_file:
-      - .env               
+      dockerfile: docker/Dockerfile.exp
+
+    container_name: sentiment-exp-dev
+
+    volumes:
+      - .:/workspace
+
+    working_dir: /workspace
+
     stdin_open: true
     tty: true
+
+    devices:
+      - /dev/kfd
+      - /dev/dri
+
+    group_add:
+      - video
+
+    ipc: host
+    shm_size: "8gb"
+
+    cap_add:
+      - SYS_PTRACE
+
+    security_opt:
+      - seccomp=unconfined
 
 volumes:
   rag_cache:
