@@ -1,0 +1,21 @@
+
+# Base
+-r base.txt
+
+# Hyperparameter Tuning
+optuna==4.8.0
+wandb==0.26.1
+
+# Deep Learning / Transformers
+transformers==5.5.4
+accelerate==1.13.0
+datasets==4.8.4
+evaluate==0.4.6
+safetensors==0.7.0
+tokenizers==0.22.2
+safetensors==0.7.0
+
+# plot
+matplotlib
+seaborn
+
