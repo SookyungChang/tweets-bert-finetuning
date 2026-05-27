@@ -1,0 +1,10 @@
+FROM rocm/pytorch:rocm7.2.2_ubuntu24.04_py3.12_pytorch_release_2.10.0
+
+WORKDIR /workspace
+
+COPY requirements/exploration.txt requirements/
+COPY requirements/base.txt requirements/
+
+RUN pip install -r requirements/exploration.txt
+
+CMD ["/bin/bash"]
