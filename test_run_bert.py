@@ -1,3 +1,4 @@
+import torch
 from src.inference import predictor_base, predictor_bert
 from src.config_bert import ModelConfig
 from huggingface_hub import snapshot_download
@@ -9,14 +10,15 @@ def compare_models():
     # model = ModelConfig()
     # modelpath = paths.SAVED_MODELS_PATH / f"bert-{model.version}/checkpoint-20000"
     # bert = predictor_bert.Predictor(modelpath)
-
+    threshold = 0.3
     bert_path = snapshot_download(repo_id="sweetguma/bert-sentiment-model")
-    bert = predictor_bert.Predictor(bert_path)
+    bert = predictor_bert.Predictor(bert_path, threshold=0.8)
+    print(torch.cuda.is_available())
 
     base_model = predictor_base.load_model()
 
     texts = [
-        "I love this product!",
+        "It's okay, not great but not bad.",
         "This is the worst experience ever.",
         "It's okay, not great but not bad.",
         "I feel so happy today!",
@@ -29,16 +31,16 @@ def compare_models():
 
     for text in texts:
         bert_result = bert.predict_text(text)
-        base_result = predictor_base.predict(base_model, text)
+        base_result = predictor_base.predict(base_model, text, threshold=0.3)
 
         print(f"\n📝 Text: {text}")
         print("-" * 60)
 
         print(
-            f"Baseline → pred: {base_result['prediction']} | conf: {base_result.get('confidence', 'N/A'):.4f}"
+            f"Baseline → pred: {base_result['prediction']} | conf: {base_result.get('confidence', 'N/A')}"
         )
         print(
-            f"BERT     → pred: {bert_result['prediction']} | conf: {bert_result.get('confidence', 'N/A'):.4f}"
+            f"BERT     → pred: {bert_result['prediction']} | conf: {bert_result.get('confidence', 'N/A')}"
         )
 
         # disagreement

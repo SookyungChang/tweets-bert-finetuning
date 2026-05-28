@@ -4,14 +4,14 @@ import torch
 if torch.cuda.is_available():
     # Only make GPU 0 visible to this process when running inference.
     os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-else:
-    from optimum.onnxruntime import ORTModelForSequenceClassification
-    import numpy as np
+from optimum.onnxruntime import ORTModelForSequenceClassification
+import numpy as np
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 
 class Predictor:
-    def __init__(self, model_path, device=None):
+    def __init__(self, model_path: str, device: str = None, threshold: int = 0.1):
+        self.threshold = threshold
         self.device = device or torch.device(
             "cuda" if torch.cuda.is_available() else "cpu"
         )
@@ -36,11 +36,15 @@ class Predictor:
                 outputs = self.model(**inputs)
                 probs = torch.nn.functional.softmax(outputs.logits, dim=-1)
                 pred = torch.argmax(probs).item()
-
+                margins = abs(probs[0][0]-probs[0][1])
+                if margins < self.threshold:
+                    pred = -1
+                
             return {
                 "text": text,
                 "prediction": pred,
-                "confidence": float(torch.max(probs)),
+                # "confidence": float(torch.max(probs)),
+                "confidence": margins / self.threshold,
             }
 
         else:
@@ -58,9 +62,12 @@ class Predictor:
             )  # Softmax (numpy version)
             probs = exp_logits / np.sum(exp_logits, axis=-1, keepdims=True)
             pred = int(np.argmax(probs))
-            confidence = float(np.max(probs))
+            # confidence = float(np.max(probs))
+            margins = abs(probs[0][0]-probs[0][1])
+            if abs(probs[0][0]-probs[0][1]) < self.threshold:
+                pred = -1
 
-            return {"text": text, "prediction": pred, "confidence": confidence}
+            return {"text": text, "prediction": pred, "confidence": margins / self.threshold}
 
     def predict_df(self, df, text_column="text"):
         texts = df[text_column].dropna().tolist()
@@ -82,9 +89,13 @@ class Predictor:
 
                 all_logits.append(logits)
                 probs = torch.softmax(logits, dim=1)
-                labels = probs.argmax(dim=1).tolist()
-                all_labels.extend(labels)
-                all_scores.extend(probs.max(dim=1).values.tolist())
+
+                margins = torch.abs(probs[:, 0] - probs[:, 1])
+                labels = torch.argmax(probs, dim=-1)
+                labels[margins < self.threshold] = -1
+                all_labels.extend(labels.tolist())
+                # all_scores.extend(probs.max(dim=1).values.tolist())
+                all_scores.extend(margins / self.threshold)
         else:  # batch is no needed for CPU
             all_labels = []
             all_scores = []
@@ -104,9 +115,13 @@ class Predictor:
                     logits = logits[0]
                 exp_logits = np.exp(logits - np.max(logits, axis=-1, keepdims=True))
                 probs = exp_logits / np.sum(exp_logits, axis=-1, keepdims=True)
-
-                all_labels.append(int(np.argmax(probs)))
-                all_scores.append(float(np.max(probs)))
+                margins = abs(probs[0]-probs[1])
+                if margins < self.threshold:
+                    all_labels.append(-1)
+                else:
+                    all_labels.append(int(np.argmax(probs)))
+                    # all_scores.append(float(np.max(probs)))
+                all_scores.append(margins/self.threshold)
 
         df["sentiment_label"] = all_labels
         df["sentiment_score"] = all_scores

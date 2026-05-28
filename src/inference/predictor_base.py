@@ -13,7 +13,11 @@ def load_model():
     return model
 
 
-def predict(model, text):
+def predict(model, text, threshold = 0.1):
     pred = model.predict([text])[0]
     probs = model.predict_proba([text])[0]
-    return {"text": text, "prediction": int(pred), "confidence": float(probs.max())}
+    margins = abs(probs[0]-probs[1])
+    if abs(probs[0]-probs[1]) < threshold:
+        pred = -1
+    # return {"text": text, "prediction": int(pred), "confidence": float(probs.max())}
+    return {"text": text, "prediction": int(pred), "confidence": margins / threshold}
