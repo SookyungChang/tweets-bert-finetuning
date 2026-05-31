@@ -4,9 +4,8 @@ import torch
 if torch.cuda.is_available():
     # Only make GPU 0 visible to this process when running inference.
     os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-else:
-    from optimum.onnxruntime import ORTModelForSequenceClassification
-    import numpy as np
+from optimum.onnxruntime import ORTModelForSequenceClassification
+import numpy as np
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 
@@ -30,7 +29,7 @@ class Predictor:
             )
 
     def predict_text(self, text):
-        if self.device == "cuda":
+        if self.device.type == "cuda":
             inputs = self.tokenizer(text, return_tensors="pt").to(self.device)
             with torch.no_grad():
                 outputs = self.model(**inputs)
@@ -66,7 +65,7 @@ class Predictor:
         texts = df[text_column].dropna().tolist()
         print(f"Number of comments: {len(texts)}")
 
-        if self.device == "cuda":
+        if self.device.type == "cuda":
             batch_size = 16
             all_logits = []
             all_labels, all_scores = [], []
