@@ -10,6 +10,7 @@ class PathConfig:
     YOUTUBE_COMMENTS_PATH: Path = DATA_PATH / "youtube_comments"
     SAVED_MODELS_PATH: Path = BASE_DIR / "saved_models"
     VECTORSTORE_PATH: Path = BASE_DIR / "DB"
+    DB_PATH: Path = BASE_DIR / "DBs"
 
 
 @dataclass
