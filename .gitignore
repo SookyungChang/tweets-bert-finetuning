@@ -12,6 +12,7 @@ export_model.py
 app_test.py
 DB/*
 wandb/*
+my_sentiment_project.egg-info/*
 
 onnx_models/*
 
