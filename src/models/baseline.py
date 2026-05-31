@@ -1,11 +1,12 @@
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
+from src.data.build_datasets import build_dataset_db
 
 
 class IT_IDF:
-    def __init__(self, X, y):
-
+    def __init__(self):
+        X, y = build_dataset_db(type="base")
         self.X_train, self.X_test, self.X_dev, self.y_train, self.y_test, self.y_dev = (
             *X,
             *y,
