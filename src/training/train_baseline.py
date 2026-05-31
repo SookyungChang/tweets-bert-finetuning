@@ -3,16 +3,13 @@ import pickle
 from pathlib import Path
 from sklearn.metrics import f1_score
 
-from src.data.preprocess import build_dataset
 from src.models.baseline import IT_IDF
 from src.experiments.optuna_search import get_best_para
 from src.config_base import SearchConfig, SearchSpace, ModelConfig, PathConfig
 
 
-def train(data_path):
-    X, y = build_dataset(data_path, type="base")
-
-    itidf = IT_IDF(X, y)
+def train():
+    itidf = IT_IDF()
 
     config = SearchConfig()
     space = SearchSpace()
