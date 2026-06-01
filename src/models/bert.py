@@ -1,5 +1,5 @@
 import os
-
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 import torch
 
 from transformers import (
@@ -47,7 +47,7 @@ class BERTfinetuning:
     # Tokenization
     def tokenize_function(self, examples):
         return self.tokenizer(
-            examples["clean_text"],
+            examples["text"],
             #  padding="max_length", # Data Collator: dynamical padding
             truncation=True,
             max_length=128,
