@@ -65,10 +65,13 @@ class Predictor:
         texts = df[text_column].dropna().tolist()
         print(f"Number of comments: {len(texts)}")
 
+        all_labels = []
+        all_scores_0 = []
+        all_scores_1 = []
+
         if self.device.type == "cuda":
             batch_size = 16
             all_logits = []
-            all_labels, all_scores = [], []
 
             for i in range(0, len(texts), batch_size):
                 batch_texts = texts[i : i + batch_size]
@@ -83,11 +86,9 @@ class Predictor:
                 probs = torch.softmax(logits, dim=1)
                 labels = probs.argmax(dim=1).tolist()
                 all_labels.extend(labels)
-                all_scores.extend(probs.max(dim=1).values.tolist())
+                all_scores_0.extend(probs[:, 0].tolist())  # prob for class 0
+                all_scores_1.extend(probs[:, 1].tolist())  # prob for class 1
         else:  # batch is no needed for CPU
-            all_labels = []
-            all_scores = []
-
             for text in texts:
                 inputs = self.tokenizer(
                     [str(text)], return_tensors="pt", truncation=True, max_length=128
@@ -105,9 +106,10 @@ class Predictor:
                 probs = exp_logits / np.sum(exp_logits, axis=-1, keepdims=True)
 
                 all_labels.append(int(np.argmax(probs)))
-                all_scores.append(float(np.max(probs)))
-
-        df["sentiment_label"] = all_labels
-        df["sentiment_score"] = all_scores
+                all_scores_0.append(probs[0])
+                all_scores_1.append(probs[1])
+        df["bert_preds"] = all_labels 
+        df["scores_0"] = all_scores_0
+        df["scores_1"] = all_scores_1
 
         return df
