@@ -23,7 +23,7 @@ def safe_detect(text):
         pass
     return False
 
-def clean_database(db_path=paths.DB_PATH / "kaggle_raw_data.db"):
+def clean_database(db_path):
     conn = sqlite3.connect(db_path)
     
     chunk_size = 100000
@@ -51,6 +51,40 @@ def clean_database(db_path=paths.DB_PATH / "kaggle_raw_data.db"):
     conn.close()
     print("Completed!")
 
+import sqlite3
+import pandas as pd
+import re
+
+def remove_mentions(text):
+    mention_pattern = r"@\S+"
+    return re.sub(mention_pattern, "", str(text)).strip()
+
+def clean_mentions_in_separated_dbs(db_path):
+    conn = sqlite3.connect(db_path)
+
+    chunk_size = 100000
+
+    print("remove commenting @...")
+
+    query = "SELECT ids, text, target FROM clean_tweets"
+
+    for i, chunk in enumerate(pd.read_sql(query, conn, chunksize=chunk_size)):
+
+        chunk["text"] = chunk["text"].apply(remove_mentions)
+        chunk = chunk[chunk["text"].str.len() > 5].reset_index(drop=True)
+
+        if i == 0:
+            chunk.to_sql('no_com_tweets', conn, if_exists='replace', index=False)
+        else:
+            chunk.to_sql('no_com_tweets', conn, if_exists='append', index=False)
+            
+        print(f"[{i+1:02d}] {(i+1)*chunk_size:,} saved...")
+        
+    conn.close()
+    print("Completed!")
+    
 
 if __name__ == "__main__":
-    clean_database()
+    db_path=paths.DB_PATH / "kaggle_raw_data.db"
+    # clean_database(db_path)
+    clean_mentions_in_separated_dbs(db_path)
