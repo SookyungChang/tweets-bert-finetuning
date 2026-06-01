@@ -1,3 +1,5 @@
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "0" # should leave it here to train
 from src.inference import predictor_base, predictor_bert
 from src.config_bert import ModelConfig
 from huggingface_hub import snapshot_download
@@ -48,10 +50,6 @@ def compare_models():
     print("\nDone.")
 
 
-def train_model():
-    train()
-
-
 if __name__ == "__main__":
-    compare_models()
-    # train_model()
+    # compare_models()
+    train()
