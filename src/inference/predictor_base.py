@@ -16,4 +16,4 @@ def load_model():
 def predict(model, text):
     pred = model.predict([text])[0]
     probs = model.predict_proba([text])[0]
-    return {"text": text, "prediction": int(pred), "confidence": float(probs.max())}
+    return {"text": text, "prediction": int(pred), "probs_0": probs[0], "probs_1": probs[1]}
