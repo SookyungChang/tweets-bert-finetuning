@@ -6,7 +6,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 import torch
 from transformers import TrainingArguments
-from src.data.preprocess import build_dataset
+from src.data.build_datasets import build_dataset_db
 from src.models.bert import BERTfinetuning
 from src.config_bert import ModelConfig
 from src.config import PathConfig
@@ -27,8 +27,7 @@ def train(device=None, sample_size=None, log_name=None):
     if log_name is None:
         log_name = "bert" + "-" + model.version
 
-    data_path = paths.TWEETS_PATH / "tweets640k.parquet"
-    dataset = build_dataset(data_path, type="bert", sample_size=sample_size)
+    dataset = build_dataset_db(type="bert")
     paths.SAVED_MODELS_PATH.mkdir(parents=True, exist_ok=True)
     output_dir_path = os.path.join(paths.SAVED_MODELS_PATH, f"bert-{model.version}")
     wandb.init(project="bert-finetuning", name=log_name, config=model.__dict__)
