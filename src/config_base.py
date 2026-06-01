@@ -19,7 +19,7 @@ class SearchSpace:
 class ModelConfig:
     seed: int = 42
     max_iter: int = 2000
-    version: str = "0.1.1"
+    version: str = "0.2.1"
     f1_avg: str = "macro"
 
 
