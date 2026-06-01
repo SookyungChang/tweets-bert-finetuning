@@ -5,24 +5,25 @@ from src.config import PathConfig
 paths = PathConfig()
 
 conn = sqlite3.connect(paths.DB_PATH / "kaggle_raw_data.db")
+conn_new = sqlite3.connect(paths.DB_PATH / "tweets.db")
+
+table_name = 'no_com_tweets'
 
 # ==========================================
 # 1. TRAIN 320k (train.db)
 # ==========================================
 print("Train data...")
-train_query = """
+train_query = f"""
 WITH Ranked AS (
     SELECT ids, text, target as label,
            ROW_NUMBER() OVER (PARTITION BY target ORDER BY RANDOM()) as rn
-    FROM clean_tweets
+    FROM {table_name}
 )
 SELECT ids, text, label FROM Ranked WHERE rn <= 160000; 
 """
 
 df_train = pd.read_sql(train_query, conn)
-conn_train = sqlite3.connect(paths.DB_PATH / "train.db")
-df_train.to_sql('tweets', conn_train, if_exists='replace', index=False)
-conn_train.close()
+df_train.to_sql('train', conn_new, if_exists='replace', index=False)
 
 # ==========================================
 # 2. VAL 160k (val.db)
@@ -32,15 +33,13 @@ val_query = f"""
 WITH Ranked AS (
     SELECT ids, text, target as label,
            ROW_NUMBER() OVER (PARTITION BY target ORDER BY RANDOM()) as rn
-    FROM clean_tweets
+    FROM {table_name}
     WHERE ids NOT IN ({','.join(map(str, df_train['ids']))})
 )
 SELECT ids, text, label FROM Ranked WHERE rn <= 80000; 
 """
 df_val = pd.read_sql(val_query, conn)
-conn_val = sqlite3.connect(paths.DB_PATH / "val.db")
-df_val.to_sql('tweets', conn_val, if_exists='replace', index=False)
-conn_val.close()
+df_val.to_sql('val', conn_new, if_exists='replace', index=False)
 
 # ==========================================
 # 3. TEST 160k (test.db)
@@ -51,16 +50,14 @@ test_query = f"""
 WITH Ranked AS (
     SELECT ids, text, target as label,
            ROW_NUMBER() OVER (PARTITION BY target ORDER BY RANDOM()) as rn
-    FROM clean_tweets
-    -- 💡 Train과 Val에 이미 쓰인 ID는 전부 제외!
+    FROM {table_name}
     WHERE ids NOT IN ({','.join(map(str, used_ids))})
 )
 SELECT ids, text, label FROM Ranked WHERE rn <= 80000; 
 """
 df_test = pd.read_sql(test_query, conn)
-conn_test = sqlite3.connect(paths.DB_PATH / "test.db")
-df_test.to_sql('tweets', conn_test, if_exists='replace', index=False)
-conn_test.close()
+df_test.to_sql('test', conn_new, if_exists='replace', index=False)
 
+conn_new.close()
 conn.close()
 print("Split Completed.")
