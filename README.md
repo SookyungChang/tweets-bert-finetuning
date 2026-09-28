@@ -1,6 +1,6 @@
 # ⚠️ This project has been split into two separate repositories. Please use the repositories below for the latest versions:
-## [Repository 1](https://github.com/SookyungChang/YouTube_Comment_Intelligence_System.git)
-## [Repository 2](https://github.com/SookyungChang/FineTuning_BERT_Tweets.git)
+## [YouTube_Comment_Intelligence_System](https://github.com/SookyungChang/YouTube_Comment_Intelligence_System.git) ##
+## [FineTuning_BERT_Tweets](https://github.com/SookyungChang/FineTuning_BERT_Tweets.git) ##
 
 # 🧠 Production-style Sentiment Analysis: BERT Fine-tuning + RAG YouTube Comment QA
 
