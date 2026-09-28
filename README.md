@@ -1,3 +1,7 @@
+# ⚠️ This project has been split into two separate repositories. Please use the repositories below for the latest versions:
+## [Repository 1](https://github.com/SookyungChang/YouTube_Comment_Intelligence_System.git)
+## [Repository 2](https://github.com/SookyungChang/FineTuning_BERT_Tweets.git)
+
 # 🧠 Production-style Sentiment Analysis: BERT Fine-tuning + RAG YouTube Comment QA
 
 **0.85 F1 score** on 640K tweets using DistilBERT fine-tuning, significantly outperforming the TF-IDF baseline (0.80 F1). This repository combines a modular ML pipeline with a live **RAG-powered YouTube comment analyzer** deployed via HuggingFace Spaces.
